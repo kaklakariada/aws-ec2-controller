@@ -2,6 +2,20 @@
 
 An AWS serverless web app for starting/stopping EC2 instances.
 
+## Architecture
+
+EC2 controller uses the following technologies:
+
+* Authentication and Authorization: Cognito
+* Static web content: Cloudfront and S3
+* Frontend: React and AWS Amplify
+* Backend: API-Gateway and Lambda
+* Storage: DynamoDb
+* Deployment: Cloudformation / CDK
+* Backend framework: Java 11 and Micronaut
+
+![Architecture](arch/architecture.png "Architecture")
+
 ## Deployment to AWS
 
 ### Preconitions
@@ -174,3 +188,9 @@ Make sure your Cognito user has role `Users`.
 Creating an account on the login page fails with message `SignUp is not permitted for this user pool`.
 
 Registering of new users is deactivated for the Cognito user pool. You can change this by setting `allowAdminCreateUserOnly` to `false` in `cognito.ts`.
+
+#### Loading instances sometimes takes up to 10s
+
+The backend uses Java Lambdas which need some time for initialization when inactive for araound 15 minutes (cold start).
+
+Solution: rewrite Lambda code e.g. in TypeScript.
