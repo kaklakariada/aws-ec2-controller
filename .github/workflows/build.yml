@@ -38,17 +38,16 @@ jobs:
     - name: Configure infrastructure
       run: |
 cat > infrastructure/infrastructure-config.ts << EOF
-import { InfrastructureConfig } from "./lib/infrastructure-config-interface";
-
-export const CONFIG: InfrastructureConfig = {
-    region: "eu-west-1",
-    domain: "ec2-controller.example.com",
-    hostedZoneName: "example.com.",
-    hostedZoneId: "XXXXXXXXXXXXXX",
-    sslCertificateArn: "arn:aws:acm:us-east-1:000000000000:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-    stackName: "ec2-controller",
-    contactEmailAddress: "admin@example.com"
-};
+import { InfrastructureConfig } from "./lib/infrastructure-config-interface";\
+export const CONFIG: InfrastructureConfig = {\
+    region: "eu-west-1",\
+    domain: "ec2-controller.example.com",\
+    hostedZoneName: "example.com.",\
+    hostedZoneId: "XXXXXXXXXXXXXX",\
+    sslCertificateArn: "arn:aws:acm:us-east-1:000000000000:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",\
+    stackName: "ec2-controller",\
+    contactEmailAddress: "admin@example.com"\
+};\
 EOF
 
     - name: Build infrastructure
@@ -57,15 +56,14 @@ EOF
     - name: Configure frontend
       run: |
 cat > frontend/src/frontend-config.ts << EOF
-import { FrontendConfig } from "./environment";
-
-export const CONFIG: FrontendConfig = {
-    region: "eu-west-1",
-    apiGatewayEndpointUrl: "https://xxxxxxxxxx.execute-api.eu-west-1.amazonaws.com/prod",
-    cognitoIdentityPoolId: "eu-west-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-    cognitoUserPoolId: "eu-west-1_xxxxxxxxx",
-    cognitoUserPoolWebClientId: "xxxxxxxxxxxxxxxxxxxxxxxxxx"
-};
+import { FrontendConfig } from "./environment";\
+export const CONFIG: FrontendConfig = {\
+    region: "eu-west-1",\
+    apiGatewayEndpointUrl: "https://xxxxxxxxxx.execute-api.eu-west-1.amazonaws.com/prod",\
+    cognitoIdentityPoolId: "eu-west-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",\
+    cognitoUserPoolId: "eu-west-1_xxxxxxxxx",\
+    cognitoUserPoolWebClientId: "xxxxxxxxxxxxxxxxxxxxxxxxxx"\
+};\
 EOF
 
     - name: Build frontend
