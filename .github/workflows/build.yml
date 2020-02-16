@@ -30,7 +30,7 @@ jobs:
 
     - uses: actions/setup-node@v1
       with:
-      node-version: '10.x'
+        node-version: '10.x'
 
     - name: Build backend
       run: cd backend && ./gradlew build
