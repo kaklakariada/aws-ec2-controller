@@ -1,6 +1,6 @@
 # EC2 Controller
 
-A serverless web app for starting/stopping EC2 instances
+An AWS serverless web app for starting/stopping EC2 instances.
 
 ## Deployment to AWS
 
