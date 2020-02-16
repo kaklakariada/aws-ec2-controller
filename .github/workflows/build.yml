@@ -30,10 +30,12 @@ jobs:
 
     - uses: actions/setup-node@v1
       with:
-        node-version: '10.x'
+        node-version: '12.x'
 
     - name: Build backend
-      run: cd backend && ./gradlew build
+      run: |
+        cd backend
+        ./gradlew build
 
     - name: Configure infrastructure
       run: |
@@ -51,7 +53,10 @@ jobs:
         EOF
 
     - name: Build infrastructure
-      run: cd infrastructure && npm install && npm run cdk synth
+      run: |
+        cd infrastructure
+        npm install
+        npm run cdk synth
 
     - name: Configure frontend
       run: |
@@ -67,4 +72,7 @@ jobs:
         EOF
 
     - name: Build frontend
-      run: cd frontend && npm install && npm run build
+      run: |
+        cd frontend
+        npm install
+        npm run build

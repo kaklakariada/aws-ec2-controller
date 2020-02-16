@@ -2,7 +2,7 @@
 
 An AWS serverless web app for starting/stopping EC2 instances.
 
-![CI](https://github.com/kaklakariada/aws-ec2-controller/workflows/CI/badge.svg)
+[![CI](https://github.com/kaklakariada/aws-ec2-controller/workflows/CI/badge.svg)](https://github.com/kaklakariada/aws-ec2-controller/actions?query=workflow%3ACI)
 
 ## Architecture
 
@@ -26,13 +26,15 @@ To deploy this in your AWS account you will need the following:
 
 * A region where you want to deploy, e.g. `eu-west-1`
 * A Route53 hosted zone, e.g. `example.com.` and its ID `XXXXXXXXXXXXXX`
-* A domain you want to use, e.g. `ec2-controller.example.com`
-* An ACM certificate for `ec2-controller.example.com` (or `*.example.com`) in `us-east-1` and its ARN `arn:aws:acm:us-east-1:000000000000:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+* A subdomain of `example.com` you want to use for the web app, e.g. `ec2-controller.example.com`
+* An ACM certificate for `ec2-controller.example.com` or `*.example.com` in `us-east-1` and its ARN `arn:aws:acm:us-east-1:000000000000:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 
 On your local machine you will need the following:
 
-* NodeJS
+* [Node.js](https://nodejs.org/en/) 12.x
 * JDK 11 (e.g. from [AdoptOpenJDK](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot))
+* [AWS Command line interface](https://aws.amazon.com/cli/)
+* Configure AWS credentials for the AWS CLI by calling `aws configure`
 
 ### Build backend
 
@@ -167,6 +169,14 @@ npx npm-check-updates -u
 ```
 
 ### Troubleshooting
+
+#### Building frontend fails because `./frontend-config` is not found
+
+```.\src\environment.ts
+Cannot find file './frontend-config' in '.\src'.
+```
+
+Create `frontend/src/frontend-config.ts` as described above.
 
 #### There is no "Run" button for my EC2 instance in the web app
 
