@@ -2,6 +2,8 @@
 
 An AWS serverless web app for starting/stopping EC2 instances.
 
+![CI](https://github.com/kaklakariada/aws-ec2-controller/workflows/CI/badge.svg)
+
 ## Architecture
 
 EC2 controller uses the following technologies:
