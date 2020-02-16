@@ -37,7 +37,7 @@ jobs:
 
     - name: Configure infrastructure
       run: |
-cat > infrastructure/infrastructure-config.ts << EOF
+cat > infrastructure/infrastructure-config.ts << EOF\
 import { InfrastructureConfig } from "./lib/infrastructure-config-interface";\
 export const CONFIG: InfrastructureConfig = {\
     region: "eu-west-1",\
@@ -55,7 +55,7 @@ EOF
 
     - name: Configure frontend
       run: |
-cat > frontend/src/frontend-config.ts << EOF
+cat > frontend/src/frontend-config.ts << EOF\
 import { FrontendConfig } from "./environment";\
 export const CONFIG: FrontendConfig = {\
     region: "eu-west-1",\
