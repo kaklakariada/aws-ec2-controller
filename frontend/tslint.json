@@ -1,0 +1,21 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "linterOptions": {
+        "exclude": [
+            "src/serviceWorker.ts"
+        ]
+    },
+    "jsRules": {},
+    "rules": {
+        "ordered-imports": false,
+        "interface-name": false,
+        "trailing-comma": false,
+        "object-literal-sort-keys": false,
+        "member-access": false,
+        "no-console": false
+    },
+    "rulesDirectory": []
+}

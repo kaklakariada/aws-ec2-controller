@@ -1,0 +1,16 @@
+# Ignore Gradle project-specific cache directory
+/.project
+/backend/.gradle/
+/backend/build/
+/backend/bin/
+/backend/.factorypath
+/backend/.project
+/backend/.classpath
+/backend/.settings/org.eclipse.buildship.core.prefs
+
+# Config files
+/frontend/deploy/deploy-config.js
+/frontend/src/frontend-config.ts
+/backend/local-server-env.properties
+/infrastructure/infrastructure-config.ts
+
