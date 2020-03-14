@@ -1,4 +1,4 @@
-import { EC2_CONTROLLER_ENDPOINT } from "./services/BackendEndpoints";
+import { ENDPOINT_NAME } from "./services/BackendEndpoints";
 import { CONFIG } from "./frontend-config";
 
 export interface FrontendConfig {
@@ -54,7 +54,7 @@ const environment: EnvironmentConfig = {
         API: {
             endpoints: [
                 {
-                    name: EC2_CONTROLLER_ENDPOINT,
+                    name: ENDPOINT_NAME,
                     endpoint: isLocalDevEnvironment ? "http://localhost:8080" : config.apiGatewayEndpointUrl,
                     region: config.region
                 }

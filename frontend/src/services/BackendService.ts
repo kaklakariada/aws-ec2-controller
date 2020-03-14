@@ -3,7 +3,7 @@ import { AuthService } from "./AuthService";
 import { EnvironmentService } from "./EnvironmentService";
 import { DispatchType } from "../reducers/main";
 import { LOADING, LOADED, ERROR } from "../reducers/instance";
-import { EC2_CONTROLLER_ENDPOINT } from "./BackendEndpoints";
+import { ENDPOINT_NAME } from "./BackendEndpoints";
 import { Instance, InstanceJson } from "./Instance";
 
 export class BackendService {
@@ -23,7 +23,7 @@ export class BackendService {
 
     async getInstances(): Promise<Instance[]> {
         try {
-            const respone = await this.apiGateway.get(EC2_CONTROLLER_ENDPOINT, "/instances", {});
+            const respone = await this.apiGateway.get(ENDPOINT_NAME, "/instances", {});
             const rawList: InstanceJson[] = respone.result;
             return rawList.map((i) => new Instance(i));
         } catch (error) {
@@ -35,7 +35,7 @@ export class BackendService {
 
     async setInstanceState(id: string, state: "start" | "stop"): Promise<string> {
         try {
-            const response = await this.apiGateway.put(EC2_CONTROLLER_ENDPOINT, `/instances/${id}/state/${state}`, {
+            const response = await this.apiGateway.put(ENDPOINT_NAME, `/instances/${id}/state/${state}`, {
                 headers: { "Content-Type": "Content-Type" }
             });
             console.log("Set state result", response);
