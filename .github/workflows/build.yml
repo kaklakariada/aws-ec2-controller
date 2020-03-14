@@ -57,7 +57,7 @@ jobs:
     - name: Build infrastructure
       run: |
         cd infrastructure
-        npm install
+        npm ci
         npm run cdk synth
 
     - name: Configure frontend
@@ -76,5 +76,5 @@ jobs:
     - name: Build frontend
       run: |
         cd frontend
-        npm install
+        npm ci
         #npm run build
