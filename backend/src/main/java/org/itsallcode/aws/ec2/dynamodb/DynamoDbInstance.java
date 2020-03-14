@@ -2,9 +2,7 @@ package org.itsallcode.aws.ec2.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
-@DynamoDBTable(tableName = "ec2-controller-instances")
 public class DynamoDbInstance
 {
     private String id;
