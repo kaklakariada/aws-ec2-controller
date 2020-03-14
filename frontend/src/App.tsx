@@ -3,7 +3,7 @@ import "./App.css";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { withAuthenticator } from "aws-amplify-react";
 import InstanceList from "./components/InstanceList";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme, ThemeOptions } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import AppBar from "./components/AppBar";
 import { StateProvider } from "./hooks/state";
@@ -27,7 +27,7 @@ const App: React.FC = () => {
 
 const AuthenticatedApp = withAuthenticator(App, false);
 
-const theme = createMuiTheme({
+const darkTheme: ThemeOptions = {
   palette: {
     type: "dark"
   },
@@ -38,9 +38,16 @@ const theme = createMuiTheme({
       }
     }
   }
-});
+};
+
+const lightTheme: ThemeOptions = {
+  palette: {
+    type: "light"
+  }
+};
 
 const ThemedApp: React.FC = () => {
+  const theme = createMuiTheme(darkTheme);
   return (
     <ThemeProvider theme={theme}>
       <AuthenticatedApp />
