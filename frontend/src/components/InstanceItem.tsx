@@ -50,9 +50,6 @@ function iconWithTooltip(icon: JSX.Element, tooltip: string) {
 }
 
 function getInstanceStateIcon(instance: Instance) {
-    if (instance.stopped) {
-        return iconWithTooltip(<StopIcon />, "Stopped");
-    }
     const dnsInSync = instance.publicIpAddress && (instance.publicIpAddress === instance.dnsIpAddress);
     if (instance.running && dnsInSync) {
         return iconWithTooltip(<CheckIcon style={{ color: "green" }} />, "Running, DNS in sync");
@@ -60,7 +57,7 @@ function getInstanceStateIcon(instance: Instance) {
     if (instance.running && !dnsInSync) {
         return iconWithTooltip(<CheckIcon style={{ color: "red" }} />, "Running, DNS not in sync");
     }
-    return iconWithTooltip(<HelpIcon />, "State: " + instance.state);
+    return (<></>);
 }
 
 function getReadableDuration(durationSeconds: number | undefined): string {
@@ -95,9 +92,9 @@ const InstanceItem: FunctionComponent<{ instance: Instance }> = ({ instance }) =
         setSnackbarOpen(true);
     }
 
-    const startStopButtonIcon = instance.stopped
-        ? <PlayArrowIcon />
-        : (instance.running ? <PauseIcon /> : <HelpIcon />);
+    const startStopButtonLabel = instance.stopped
+        ? "Start"
+        : (instance.running ? "Stop" : "(pending)");
     const startStopButtonTooltip = getStartStopButtonTooltip(instance);
     const instanceStateIcon = getInstanceStateIcon(instance);
     const readableUptime = getReadableDuration(instance.uptimeSeconds);
@@ -132,18 +129,18 @@ const InstanceItem: FunctionComponent<{ instance: Instance }> = ({ instance }) =
                             `${instance.dnsIpAddress} (TTL: ${instance.dnsTtl}s)`}
                     </Typography>
                 }
-            </CardContent>
             {
                 instance.controlAllowed &&
                 <CardActions className={classes.actions}>
                     <Tooltip title={startStopButtonTooltip}>
                         <Button size="small" onClick={startStopInstance}
                             disabled={loading || (!instance.running && !instance.stopped)}>
-                            {startStopButtonIcon}
+                                {startStopButtonLabel}
                         </Button>
                     </Tooltip>
                 </CardActions>
             }
+            </CardContent>
 
             <Snackbar
                 anchorOrigin={{
