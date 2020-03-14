@@ -9,7 +9,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.itsallcode.aws.ec2.InstanceController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +16,8 @@ import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesResult;
 import com.amazonaws.services.ec2.model.Instance;
+import com.amazonaws.services.ec2.model.InstanceState;
+import com.amazonaws.services.ec2.model.InstanceStateChange;
 import com.amazonaws.services.ec2.model.StartInstancesRequest;
 import com.amazonaws.services.ec2.model.StartInstancesResult;
 import com.amazonaws.services.ec2.model.StopInstancesRequest;
@@ -25,14 +26,17 @@ import com.amazonaws.services.ec2.model.StopInstancesResult;
 @Singleton
 public class Ec2Service
 {
-    private static final Logger LOG = LoggerFactory.getLogger(InstanceController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Ec2Service.class);
 
     private AmazonEC2 ec2Client;
+
+    private boolean startStopAllowed;
 
     @Inject
     public Ec2Service(AmazonEC2 ec2Client)
     {
         this.ec2Client = ec2Client;
+        this.startStopAllowed = true;
     }
 
     public List<Instance> list()
@@ -56,13 +60,22 @@ public class Ec2Service
     public StartInstancesResult start(String id)
     {
         LOG.info("Starting instance {}...", id);
-        return ec2Client.startInstances(new StartInstancesRequest().withInstanceIds(id));
+        if (startStopAllowed)
+        {
+            return ec2Client.startInstances(new StartInstancesRequest().withInstanceIds(id));
+        }
+        return new StartInstancesResult().withStartingInstances(
+                new InstanceStateChange().withCurrentState(new InstanceState().withName("dummy starting")));
     }
 
     public StopInstancesResult stop(String id)
     {
         LOG.info("Stopping instance {}...", id);
-        return ec2Client.stopInstances(new StopInstancesRequest().withInstanceIds(id));
+        if (startStopAllowed)
+        {
+            return ec2Client.stopInstances(new StopInstancesRequest().withInstanceIds(id));
+        }
+        return new StopInstancesResult().withStoppingInstances(
+                new InstanceStateChange().withCurrentState(new InstanceState().withName("dummy stopping")));
     }
-
 }
