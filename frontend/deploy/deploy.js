@@ -2,7 +2,9 @@ const { spawnSync } = require('child_process');
 const { CONFIG } = require('./deploy-config');
 
 function exec(command, args) {
-    spawnSync(command, args, { stdio: 'inherit' });
+    const environment = Object.create(process.env);
+    environment.AWS_PAGER = '';
+    spawnSync(command, args, { stdio: 'inherit', env: environment });
 }
 
 const bucket = CONFIG.staticWebsiteBucket;
