@@ -8,13 +8,9 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import Typography from "@material-ui/core/Typography";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import PauseIcon from "@material-ui/icons/Pause";
-import HelpIcon from "@material-ui/icons/Help";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import StopIcon from "@material-ui/icons/Stop";
 import CheckIcon from "@material-ui/icons/Check";
 
 import humanizeDuration, { Options } from "humanize-duration";
