@@ -1,6 +1,4 @@
 import API from "@aws-amplify/api";
-import { AuthService } from "./AuthService";
-import { EnvironmentService } from "./EnvironmentService";
 import { DispatchType } from "../reducers/main";
 import { LOADING, LOADED, ERROR } from "../reducers/instance";
 import { ENDPOINT_NAME } from "./BackendEndpoints";
@@ -8,8 +6,6 @@ import { Instance, InstanceJson } from "./Instance";
 
 export class BackendService {
 
-    authService = new AuthService();
-    envService = new EnvironmentService();
     apiGateway = API;
 
     dispatchGetInstances(dispatch: DispatchType) {
