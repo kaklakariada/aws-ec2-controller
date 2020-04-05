@@ -11,6 +11,7 @@ import com.amazonaws.serverless.exceptions.ContainerInitializationException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.function.aws.proxy.MicronautLambdaContainerHandler;
 
 @SuppressWarnings("squid:S2139") // Logging and rethrowing exceptions is OK here
@@ -18,7 +19,7 @@ public class StreamLambdaHandler implements RequestStreamHandler
 {
     private static final Logger LOG = LoggerFactory.getLogger(StreamLambdaHandler.class);
 
-    private MicronautLambdaContainerHandler handler;
+    private final MicronautLambdaContainerHandler handler;
 
     public StreamLambdaHandler()
     {
@@ -34,6 +35,11 @@ public class StreamLambdaHandler implements RequestStreamHandler
             LOG.error("Could not initialize Micronaut", e);
             throw new IllegalStateException("Could not initialize Micronaut", e);
         }
+    }
+
+    ApplicationContext getApplicationContext()
+    {
+        return handler.getApplicationContext();
     }
 
     @Override

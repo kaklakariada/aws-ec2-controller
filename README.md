@@ -200,8 +200,15 @@ Add an entry for your instance to the DynamoDB table and set `controlAllowed` to
 Configure project using gradle and refresh project in Eclipse:
 
 ```bash
-cd backend
-./gradlew eclipse
+cd backend && ./gradlew eclipse
+```
+
+#### Unit test fail with a `NullPointerException` when running in Eclipse
+
+Configure project using gradle and refresh project in Eclipse:
+
+```bash
+cd backend && ./gradlew eclipse
 ```
 
 #### `GET /instances` returns error 403 Forbidden
