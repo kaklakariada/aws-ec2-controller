@@ -2,6 +2,7 @@ package org.itsallcode.aws.ec2;
 
 import java.time.Clock;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.itsallcode.aws.ec2.dynamodb.DynamoDbTableNameResolver;
@@ -17,6 +18,7 @@ import com.amazonaws.services.pricing.AWSPricing;
 import com.amazonaws.services.pricing.AWSPricingClient;
 import com.amazonaws.services.route53.AmazonRoute53;
 import com.amazonaws.services.route53.AmazonRoute53Client;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micronaut.context.annotation.Factory;
 
@@ -58,5 +60,12 @@ public class AwsClientFactory
     public Clock clock()
     {
         return Clock.systemUTC();
+    }
+
+    @Singleton
+    @Named("aws")
+    public ObjectMapper jacksonObjectMapper()
+    {
+        return new ObjectMapper();
     }
 }
