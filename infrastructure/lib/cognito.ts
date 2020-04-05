@@ -20,7 +20,7 @@ export class CognitoAuthConstruct extends Construct {
   constructor(scope: Construct, id: string, props: CognitoAuthProps) {
     super(scope, id);
     this.userPool = new CfnUserPool(this, "UserPool", {
-      userPoolName: "Ec2ControllerUserPool-" + id,
+      userPoolName: `Ec2ControllerUserPool-${id}`,
       adminCreateUserConfig: {
         allowAdminCreateUserOnly: true,
         unusedAccountValidityDays: 30,
