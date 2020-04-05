@@ -2,7 +2,7 @@ import { Construct, Duration, CfnOutput } from "@aws-cdk/core";
 import { Role, FederatedPrincipal, PolicyDocument, PolicyStatement } from "@aws-cdk/aws-iam";
 import {
   CfnUserPool, CfnUserPoolClient, CfnIdentityPool,
-  CfnIdentityPoolRoleAttachment, CfnUserPoolGroup, UserPoolAttribute
+  CfnIdentityPoolRoleAttachment, CfnUserPoolGroup
 } from "@aws-cdk/aws-cognito";
 
 interface CognitoAuthProps {
@@ -34,7 +34,7 @@ If you have any questions, please contact ${props.contactEmailAddress}`
         },
       },
       aliasAttributes: ["preferred_username", "email"],
-      autoVerifiedAttributes: [UserPoolAttribute.EMAIL],
+      autoVerifiedAttributes: ["email"],
       deviceConfiguration: {
         challengeRequiredOnNewDevice: false,
         deviceOnlyRememberedOnUserPrompt: false

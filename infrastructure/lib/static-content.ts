@@ -1,7 +1,7 @@
 import cdk = require("@aws-cdk/core");
 import { Bucket, BucketPolicy } from "@aws-cdk/aws-s3";
 import { RemovalPolicy, CfnOutput, Construct } from "@aws-cdk/core";
-import { Effect, PolicyStatement, CanonicalUserPrincipal } from "@aws-cdk/aws-iam";
+import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 import { CfnRecordSetGroup } from "@aws-cdk/aws-route53";
 import { Certificate } from "@aws-cdk/aws-certificatemanager";
 import {
