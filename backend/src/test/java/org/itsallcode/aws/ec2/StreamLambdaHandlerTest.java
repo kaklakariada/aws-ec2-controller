@@ -52,9 +52,6 @@ class StreamLambdaHandlerTest
 
         JsonNode response = handleRequest(request);
         assertEquals(500, response.get("statusCode").asInt());
-        assertEquals(
-                "{\"result\":\"java.lang.IllegalArgumentException: Tablename for class DynamoDbInstance not found in environment using property tablename.dynamodbinstance\"}",
-                response.get("body").textValue());
     }
 
     private JsonNode handleRequest(String input) throws IOException
