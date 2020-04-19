@@ -1,9 +1,9 @@
 import React from "react";
 import "./App.css";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { withAuthenticator } from "aws-amplify-react";
+import { AmplifyAuthenticator } from '@aws-amplify/ui-react';
 import InstanceList from "./components/InstanceList";
-import { createMuiTheme, ThemeOptions } from "@material-ui/core/styles";
+import { createMuiTheme, ThemeOptions, makeStyles } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import AppBar from "./components/AppBar";
 import { StateProvider } from "./hooks/state";
@@ -25,8 +25,6 @@ const App: React.FC = () => {
   );
 };
 
-const AuthenticatedApp = withAuthenticator(App, false);
-
 const darkTheme: ThemeOptions = {
   palette: {
     type: "dark"
@@ -46,12 +44,22 @@ const lightTheme: ThemeOptions = {
   }
 };
 
+
+const useStyles = makeStyles(theme => ({
+  authenticator: {
+    'text-align': 'center'
+  }
+}));
+
 const ThemedApp: React.FC = () => {
+  const classes = useStyles();
   const theme = createMuiTheme(darkTheme);
   return (
-    <ThemeProvider theme={theme}>
-      <AuthenticatedApp />
-    </ThemeProvider>
+    <AmplifyAuthenticator usernameAlias="username" className={classes.authenticator}>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </AmplifyAuthenticator>
   );
 };
 
