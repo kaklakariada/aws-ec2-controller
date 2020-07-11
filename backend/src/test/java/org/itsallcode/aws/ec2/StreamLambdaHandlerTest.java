@@ -51,7 +51,7 @@ class StreamLambdaHandlerTest
         AwsProxyRequestBuilder request = new AwsProxyRequestBuilder("/instances", "GET");
 
         JsonNode response = handleRequest(request);
-        assertEquals(404, response.get("statusCode").asInt());
+        assertEquals(500, response.get("statusCode").asInt());
     }
 
     private JsonNode handleRequest(String input) throws IOException
