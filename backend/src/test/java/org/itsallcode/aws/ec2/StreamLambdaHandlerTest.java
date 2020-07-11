@@ -34,8 +34,8 @@ class StreamLambdaHandlerTest
     void emptyRequest_returns502() throws IOException
     {
         JsonNode response = handleRequest("");
-        assertEquals(502, response.get("statusCode").asInt());
-        assertEquals("{\"message\":\"Gateway timeout\"}", response.get("body").textValue());
+        assertEquals(500, response.get("statusCode").asInt());
+        assertEquals("{\"message\":\"Internal Server Error\"}", response.get("body").textValue());
     }
 
     @Test
@@ -51,7 +51,7 @@ class StreamLambdaHandlerTest
         AwsProxyRequestBuilder request = new AwsProxyRequestBuilder("/instances", "GET");
 
         JsonNode response = handleRequest(request);
-        assertEquals(500, response.get("statusCode").asInt());
+        assertEquals(404, response.get("statusCode").asInt());
     }
 
     private JsonNode handleRequest(String input) throws IOException
