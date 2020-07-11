@@ -1,5 +1,5 @@
 import cdk = require("@aws-cdk/core");
-import { Bucket, BucketPolicy } from "@aws-cdk/aws-s3";
+import { Bucket, BucketPolicy, BlockPublicAccess } from "@aws-cdk/aws-s3";
 import { RemovalPolicy, CfnOutput, Construct } from "@aws-cdk/core";
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 import { CfnRecordSetGroup } from "@aws-cdk/aws-route53";
@@ -22,7 +22,8 @@ export class StaticContentConstruct extends Construct {
     super(scope, id);
 
     const staticContentBucket = new Bucket(this, "Bucket", {
-      removalPolicy: RemovalPolicy.DESTROY
+      removalPolicy: RemovalPolicy.DESTROY,
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL
     });
 
     const certificate = Certificate.fromCertificateArn(this, "Certificate", props.sslCertificateArn);
