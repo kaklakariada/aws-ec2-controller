@@ -24,8 +24,6 @@ import com.amazonaws.services.pricing.model.GetProductsResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.micronaut.cache.annotation.Cacheable;
-
 public class PricingService
 {
     private static final Logger LOG = LoggerFactory.getLogger(PricingService.class);
@@ -44,7 +42,6 @@ public class PricingService
         decimalFormat = createDecimalFormat();
     }
 
-    @Cacheable
     public Optional<BigDecimal> getPriceInUsDollarPerHour(String location, String instanceType)
     {
         if (!ENABLED)
