@@ -1,5 +1,5 @@
 import { Construct, Duration, CfnOutput } from "@aws-cdk/core";
-import { Role, FederatedPrincipal, PolicyDocument, PolicyStatement } from "@aws-cdk/aws-iam";
+import { Role, FederatedPrincipal } from "@aws-cdk/aws-iam";
 import {
   CfnUserPool, CfnUserPoolClient, CfnIdentityPool,
   CfnIdentityPoolRoleAttachment, CfnUserPoolGroup
