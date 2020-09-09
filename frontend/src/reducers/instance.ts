@@ -1,4 +1,4 @@
-import { Instance } from "../services/BackendService";
+import { Instance } from "../services/Instance";
 import { Action } from "./main";
 
 export interface InstanceState {
