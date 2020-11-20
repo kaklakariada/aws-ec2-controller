@@ -9,8 +9,6 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import Refresh from "@material-ui/icons/Refresh";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import { useStateValue } from "../hooks/state";
-import { BackendService } from "../services/BackendService";
 import { AuthService } from "../services/AuthService";
 
 const useStyles = makeStyles(theme => ({
@@ -29,11 +27,9 @@ interface Props {
 
 }
 
-const backendService = new BackendService();
 const authService = new AuthService();
 
 const AppBar : React.FC<Props> = (props) => {
-  const {state: {instance}, dispatch} = useStateValue();
 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -54,7 +50,7 @@ const AppBar : React.FC<Props> = (props) => {
 
   const handleRefreshButton = () => {
     console.log("Handle refresh button in app bar");
-    backendService.dispatchGetInstances(dispatch);
+    // backendService.dispatchGetInstances(dispatch);
   };
 
   return (
@@ -68,7 +64,7 @@ const AppBar : React.FC<Props> = (props) => {
             EC2 Controller
           </Typography>
           <div>
-              <IconButton disabled={instance.loading} onClick={handleRefreshButton}>
+              <IconButton disabled={false} onClick={handleRefreshButton}>
                 <Refresh />
               </IconButton>
               <IconButton
