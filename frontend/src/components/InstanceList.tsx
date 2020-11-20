@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BackendService } from "../services/BackendService";
 import InstanceItem from "./InstanceItem";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { useStateValue } from "../hooks/state";
+import { Instance } from "../services/Instance";
 
 const backendService = new BackendService();
 
@@ -19,22 +19,31 @@ const useStyles = makeStyles((theme) => ({
 
 const InstanceList: React.FC = () => {
     const classes = useStyles();
-    const { state: { instance }, dispatch } = useStateValue();
+    const [loading, setLoading] = useState(true);
+    const initialInstances: Instance[] = [];
+    const [instances, setInstances] = useState(initialInstances);
+    const [error, setError] = useState(undefined);
 
-    function fetchData() {
-        backendService.dispatchGetInstances(dispatch);
+    async function fetchData() {
+        try {
+            const list = await backendService.getInstances();
+            setInstances(list);
+            setLoading(false)
+        } catch(error) {
+            setLoading(false)
+            setError(error)
+        }
     }
     useEffect(() => {
         fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
         <Container>
-            {instance.error ? <div className={classes.errorMessage}>{`Error: ${instance.error}`}</div> :
+            {error ? <div className={classes.errorMessage}>{`Error: ${error}`}</div> :
                 <div>
-                    {instance.loading
+                    {loading
                         ? <CircularProgress className={classes.circularProgress}/>
-                        : instance.instances.map((i) => <InstanceItem key={i.id} instance={i} />)}
+                        : instances.map((i) => <InstanceItem key={i.id} instance={i} />)}
                 </div>
             }
         </Container>
