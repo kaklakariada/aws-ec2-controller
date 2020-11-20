@@ -38,7 +38,7 @@ export class BackendService {
             return response.result;
         } catch (error) {
             console.warn("Error setting instance state", error);
-            const errorMessage = error.response.data.result;
+            const errorMessage = error.response?.data?.result || error.response?.data?.message;
             throw new Error(`Error setting instance state: ${error}, message: ${errorMessage}`);
         }
     }

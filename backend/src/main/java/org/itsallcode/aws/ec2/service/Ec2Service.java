@@ -16,12 +16,13 @@ import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesResult;
 import com.amazonaws.services.ec2.model.Instance;
-import com.amazonaws.services.ec2.model.InstanceState;
-import com.amazonaws.services.ec2.model.InstanceStateChange;
 import com.amazonaws.services.ec2.model.StartInstancesRequest;
 import com.amazonaws.services.ec2.model.StartInstancesResult;
 import com.amazonaws.services.ec2.model.StopInstancesRequest;
 import com.amazonaws.services.ec2.model.StopInstancesResult;
+
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpStatusException;
 
 @Singleton
 public class Ec2Service
@@ -64,8 +65,7 @@ public class Ec2Service
         {
             return ec2Client.startInstances(new StartInstancesRequest().withInstanceIds(id));
         }
-        return new StartInstancesResult().withStartingInstances(
-                new InstanceStateChange().withCurrentState(new InstanceState().withName("dummy starting")));
+        throw new HttpStatusException(HttpStatus.FORBIDDEN, "Starting this instance is not allowed");
     }
 
     public StopInstancesResult stop(String id)
@@ -75,7 +75,6 @@ public class Ec2Service
         {
             return ec2Client.stopInstances(new StopInstancesRequest().withInstanceIds(id));
         }
-        return new StopInstancesResult().withStoppingInstances(
-                new InstanceStateChange().withCurrentState(new InstanceState().withName("dummy stopping")));
+        throw new HttpStatusException(HttpStatus.FORBIDDEN, "Starting this instance is not allowed");
     }
 }
