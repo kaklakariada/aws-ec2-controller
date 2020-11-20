@@ -30,9 +30,9 @@ public class PricingService
 
     private final boolean ENABLED = false;
 
-    private AWSPricing pricing;
-    private ObjectMapper objectMapper;
-    private DecimalFormat decimalFormat;
+    private final AWSPricing pricing;
+    private final ObjectMapper objectMapper;
+    private final DecimalFormat decimalFormat;
 
     @Inject
     public PricingService(AWSPricing pricing, ObjectMapper objectMapper)

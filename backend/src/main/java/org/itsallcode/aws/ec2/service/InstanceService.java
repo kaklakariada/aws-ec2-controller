@@ -34,13 +34,12 @@ public class InstanceService
 
     private static final Logger LOG = LoggerFactory.getLogger(InstanceService.class);
 
-    private Ec2Service ec2Service;
-    private DynamoDbInstanceService dynamoDbInstanceService;
-    private Route53Client route53Client;
-
-    private PricingService pricingService;
-    private Clock clock;
-    private Environment env;
+    private final Ec2Service ec2Service;
+    private final DynamoDbInstanceService dynamoDbInstanceService;
+    private final Route53Client route53Client;
+    private final PricingService pricingService;
+    private final Clock clock;
+    private final Environment env;
 
     @Inject
     public InstanceService(Ec2Service ec2Service, DynamoDbInstanceService dynamoDbInstanceService,

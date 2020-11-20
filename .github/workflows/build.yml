@@ -39,6 +39,13 @@ jobs:
         cd backend
         ./gradlew build --info --stacktrace
 
+    - name: Publish Test Report
+      uses: scacap/action-surefire-report@v1
+      if: always()
+      with:
+        report_paths: 'backend/build/test-results/*/TEST-*.xml'
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Configure infrastructure
       run: |
         cat > infrastructure/infrastructure-config.ts << EOF

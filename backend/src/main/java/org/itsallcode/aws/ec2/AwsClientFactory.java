@@ -25,16 +25,18 @@ import io.micronaut.context.annotation.Factory;
 @Factory
 public class AwsClientFactory
 {
+    private static final Regions DEFAULT_REGION = Regions.EU_WEST_1;
+
     @Singleton
     public AmazonEC2 ec2Client()
     {
-        return AmazonEC2Client.builder().build();
+        return AmazonEC2Client.builder().withRegion(DEFAULT_REGION).build();
     }
 
     @Singleton
     public AmazonDynamoDB dynamoDbClient()
     {
-        return AmazonDynamoDBClientBuilder.standard().build();
+        return AmazonDynamoDBClientBuilder.standard().withRegion(DEFAULT_REGION).build();
     }
 
     @Singleton
@@ -47,7 +49,7 @@ public class AwsClientFactory
     @Singleton
     public AmazonRoute53 route53Client()
     {
-        return AmazonRoute53Client.builder().build();
+        return AmazonRoute53Client.builder().withRegion(DEFAULT_REGION).build();
     }
 
     @Singleton

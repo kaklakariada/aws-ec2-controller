@@ -16,8 +16,14 @@ import io.micronaut.core.type.Argument;
 public class DynamoDbTableNameResolver implements TableNameResolver
 {
     private static final Logger LOG = LoggerFactory.getLogger(DynamoDbTableNameResolver.class);
-    @Inject
+
     private Environment env;
+
+    @Inject
+    public DynamoDbTableNameResolver(Environment env)
+    {
+        this.env = env;
+    }
 
     @Override
     public String getTableName(Class<?> clazz, DynamoDBMapperConfig config)

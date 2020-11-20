@@ -13,7 +13,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 @Singleton
 public class DynamoDbInstanceService
 {
-    private DynamoDBMapper mapper;
+    private final DynamoDBMapper mapper;
 
     @Inject
     public DynamoDbInstanceService(DynamoDBMapper mapper)

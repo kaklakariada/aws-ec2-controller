@@ -29,9 +29,9 @@ public class Ec2Service
 {
     private static final Logger LOG = LoggerFactory.getLogger(Ec2Service.class);
 
-    private AmazonEC2 ec2Client;
+    private final AmazonEC2 ec2Client;
 
-    private boolean startStopAllowed;
+    private final boolean startStopAllowed;
 
     @Inject
     public Ec2Service(AmazonEC2 ec2Client)

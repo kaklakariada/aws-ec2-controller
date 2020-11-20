@@ -17,7 +17,7 @@ import com.amazonaws.services.route53.model.ResourceRecordSet;
 @Singleton
 public class Route53Client
 {
-    private AmazonRoute53 route53;
+    private final AmazonRoute53 route53;
 
     @Inject
     public Route53Client(AmazonRoute53 route53)
@@ -29,7 +29,7 @@ public class Route53Client
     {
         ListResourceRecordSetsResult result = route53
                 .listResourceRecordSets(new ListResourceRecordSetsRequest().withHostedZoneId(hostedZoneId));
-        if (result.isTruncated())
+        if (result.isTruncated().booleanValue())
         {
             throw new IllegalStateException("Did not load all resource records");
         }
