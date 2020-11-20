@@ -38,13 +38,6 @@ const darkTheme: ThemeOptions = {
   }
 };
 
-const lightTheme: ThemeOptions = {
-  palette: {
-    type: "light"
-  }
-};
-
-
 const useStyles = makeStyles(theme => ({
   authenticator: {
     'text-align': 'center'
