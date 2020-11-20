@@ -6,6 +6,7 @@
 /backend/.project
 /backend/.classpath
 /backend/.settings/org.eclipse.buildship.core.prefs
+/backend/.idea/
 
 # Config files
 /frontend/deploy/deploy-config.js

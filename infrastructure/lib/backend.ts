@@ -54,7 +54,7 @@ export class ApiGatewayBackendConstruct extends Construct {
       partitionKey: { name: "id", type: AttributeType.STRING }
     });
 
-    const backendCodeAsset = Code.fromAsset("../backend/build/distributions/backend-0.0.1.zip");
+    const backendCodeAsset = Code.fromAsset("../backend/build/distributions/backend.zip");
     const listInstancesLambda = new Function(this, "ListInstances", {
       handler: "org.itsallcode.aws.ec2.StreamLambdaHandler",
       runtime: Runtime.JAVA_11,

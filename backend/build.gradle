@@ -14,11 +14,6 @@ compileTestJava.options.compilerArgs += '-parameters'
 
 version = '0.0.1'
 
-configurations {
-    // for dependencies that are needed for development only
-    developmentOnly
-}
-
 ext {
     micronautVersion = '2.2.0'
     micronautAwsVersion = '2.2.3'
@@ -72,12 +67,13 @@ task runServer(type: JavaExec) {
   }
 
   classpath sourceSets.main.runtimeClasspath
-  classpath += configurations.developmentOnly
   jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dmicronaut.environments=local')
   main = "org.itsallcode.aws.ec2.Application"
 }
 
-task buildZip(type: Zip) {
+task buildLambdaZip(type: Zip) {
+    group = 'build'
+    archiveName 'backend.zip'
     from compileJava
     from processResources
     into('lib') {
@@ -85,11 +81,9 @@ task buildZip(type: Zip) {
     }
 }
 
-build.dependsOn buildZip
+build.dependsOn buildLambdaZip
 
-test.classpath += configurations.developmentOnly
-
-tasks.withType(JavaCompile){
+tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.compilerArgs.add('-parameters')
 }
