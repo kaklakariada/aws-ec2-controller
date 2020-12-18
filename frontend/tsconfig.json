@@ -7,7 +7,7 @@
       "esnext"
     ],
     "allowJs": false,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
