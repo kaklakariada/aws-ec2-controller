@@ -14,7 +14,8 @@ export const initialState: ReducerState = {
 
 export interface Action {
     type: string;
-    payload?: unknown;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    payload?: any;
     error?: Error;
 }
 
