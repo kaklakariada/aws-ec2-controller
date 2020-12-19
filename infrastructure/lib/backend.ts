@@ -1,7 +1,7 @@
 import { Construct, Duration, CfnOutput, RemovalPolicy } from "@aws-cdk/core";
 import {
   RestApi, AuthorizationType, EndpointType, LambdaIntegration,
-  MethodLoggingLevel, CfnAuthorizer, IResource, MockIntegration, PassthroughBehavior, LambdaIntegrationOptions
+  MethodLoggingLevel, IResource, MockIntegration, PassthroughBehavior, LambdaIntegrationOptions
 } from "@aws-cdk/aws-apigateway";
 import { Function, Runtime, Code } from "@aws-cdk/aws-lambda";
 import { Table, BillingMode, AttributeType } from "@aws-cdk/aws-dynamodb";

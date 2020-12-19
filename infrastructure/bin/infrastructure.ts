@@ -19,4 +19,4 @@ const props: InfrastructureStackProps = {
 };
 
 const app = new cdk.App();
-const stack = new InfrastructureStack(app, config.stackName, props);
+new InfrastructureStack(app, config.stackName, props);
