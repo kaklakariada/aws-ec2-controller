@@ -2,11 +2,11 @@ import { Auth } from "aws-amplify";
 import { CognitoUserSession } from "amazon-cognito-identity-js";
 
 interface EssentialCredentials {
-    accessKeyId: any;
-    sessionToken: any;
-    secretAccessKey: any;
-    identityId: any;
-    authenticated: any;
+    accessKeyId: string;
+    sessionToken: string;
+    secretAccessKey: string;
+    identityId: string;
+    authenticated: boolean;
 }
 
 interface UserAttributes {
@@ -36,7 +36,7 @@ export class AuthService {
                 console.debug("Got credentials", cred, essentialCredentials);
                 return essentialCredentials;
             })
-            .catch((err: any) => {
+            .catch((err) => {
                 console.error("Error getting credentials", err);
                 throw new Error(err);
             });
@@ -47,7 +47,7 @@ export class AuthService {
         return cred.signInUserSession.getIdToken().getJwtToken();
     }
 
-    signOut() {
+    signOut(): void {
         Auth.signOut();
     }
 }

@@ -12,19 +12,21 @@ jobs:
 
     - uses: gradle/wrapper-validation-action@v1
 
-    - uses: actions/cache@v1
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
       with:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
+        restore-keys: ${{ runner.os }}-gradle
 
-    - uses: actions/cache@v1
+    - name: Cache Node.js modules
+      uses: actions/cache@v2
       with:
         path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-node-
+          ${{ runner.OS }}-node-
+          ${{ runner.OS }}-
 
     - uses: actions/setup-java@v1
       with:
@@ -66,6 +68,7 @@ jobs:
         cd infrastructure
         npm ci
         npm run cdk synth
+        npm run lint
 
     - name: Configure frontend
       run: |
@@ -85,3 +88,4 @@ jobs:
         cd frontend
         npm ci
         npm run build
+        npm run lint

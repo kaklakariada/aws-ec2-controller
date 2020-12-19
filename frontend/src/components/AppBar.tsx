@@ -9,6 +9,8 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import Refresh from "@material-ui/icons/Refresh";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import { useStateValue } from "../hooks/state";
+import { BackendService } from "../services/BackendService";
 import { AuthService } from "../services/AuthService";
 
 const useStyles = makeStyles(theme => ({
@@ -23,19 +25,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface Props {
-
-}
-
+const backendService = new BackendService();
 const authService = new AuthService();
 
-const AppBar : React.FC<Props> = (props) => {
+const AppBar: React.FC<unknown> = () => {
+  const { state: { instance }, dispatch } = useStateValue();
 
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const open = Boolean(anchorEl);
 
-  const handleMenu = (event: any) => {
+  const handleMenu = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -50,7 +50,7 @@ const AppBar : React.FC<Props> = (props) => {
 
   const handleRefreshButton = () => {
     console.log("Handle refresh button in app bar");
-    // backendService.dispatchGetInstances(dispatch);
+    backendService.dispatchGetInstances(dispatch);
   };
 
   return (
@@ -64,36 +64,36 @@ const AppBar : React.FC<Props> = (props) => {
             EC2 Controller
           </Typography>
           <div>
-              <IconButton disabled={false} onClick={handleRefreshButton}>
-                <Refresh />
-              </IconButton>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </Menu>
-            </div>
+            <IconButton disabled={instance.loading} onClick={handleRefreshButton}>
+              <Refresh />
+            </IconButton>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={open}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
+          </div>
         </Toolbar>
       </MuiAppBar>
     </div>

@@ -11,7 +11,7 @@ interface CognitoAuthProps {
 }
 export class CognitoAuthConstruct extends Construct {
 
-  get userPoolArn() {
+  get userPoolArn(): string {
     return this.userPool.attrArn;
   }
   public readonly userRole: Role;

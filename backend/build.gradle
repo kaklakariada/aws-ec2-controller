@@ -15,9 +15,9 @@ compileTestJava.options.compilerArgs += '-parameters'
 version = '0.0.1'
 
 ext {
-    micronautVersion = '2.2.0'
-    micronautAwsVersion = '2.2.3'
-    awsSdkVersion = '1.11.905'
+    micronautVersion = '2.2.1'
+    micronautAwsVersion = '2.2.4'
+    awsSdkVersion = '1.11.923'
 }
 
 dependencies {
@@ -48,8 +48,8 @@ dependencies {
     testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "io.micronaut.test:micronaut-test-junit5"
-    testImplementation "org.mockito:mockito-core:3.6.0"
-    testRuntimeOnly "com.fasterxml.jackson.module:jackson-module-afterburner:2.11.3"
+    testImplementation "org.mockito:mockito-core:3.6.28"
+    testRuntimeOnly "com.fasterxml.jackson.module:jackson-module-afterburner:2.12.0"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }
 
@@ -73,12 +73,14 @@ task runServer(type: JavaExec) {
 
 task buildLambdaZip(type: Zip) {
     group = 'build'
-    archiveName 'backend.zip'
+    archiveFileName = 'backend.zip'
     from compileJava
     from processResources
     into('lib') {
         from configurations.runtimeClasspath
     }
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
 }
 
 build.dependsOn buildLambdaZip

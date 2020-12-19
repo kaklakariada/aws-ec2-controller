@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { BackendService } from "../services/BackendService";
 import InstanceItem from "./InstanceItem";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { Instance } from "../services/Instance";
+import { useStateValue } from "../hooks/state";
 
 const backendService = new BackendService();
 
@@ -19,31 +19,21 @@ const useStyles = makeStyles((theme) => ({
 
 const InstanceList: React.FC = () => {
     const classes = useStyles();
-    const [loading, setLoading] = useState(true);
-    const initialInstances: Instance[] = [];
-    const [instances, setInstances] = useState(initialInstances);
-    const [error, setError] = useState(undefined);
+    const { state: { instance }, dispatch } = useStateValue();
 
-    async function fetchData() {
-        try {
-            const list = await backendService.getInstances();
-            setInstances(list);
-            setLoading(false)
-        } catch(error) {
-            setLoading(false)
-            setError(error)
-        }
+    function fetchData() {
+        backendService.dispatchGetInstances(dispatch);
     }
     useEffect(() => {
         fetchData();
     }, []);
     return (
         <Container>
-            {error ? <div className={classes.errorMessage}>{`Error: ${error}`}</div> :
+            {instance.error ? <div className={classes.errorMessage}>{`Error: ${instance.error}`}</div> :
                 <div>
-                    {loading
+                    {instance.loading
                         ? <CircularProgress className={classes.circularProgress}/>
-                        : instances.map((i) => <InstanceItem key={i.id} instance={i} />)}
+                        : instance.instances.map((i) => <InstanceItem key={i.id} instance={i} />)}
                 </div>
             }
         </Container>
