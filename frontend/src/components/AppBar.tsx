@@ -28,15 +28,14 @@ const useStyles = makeStyles(theme => ({
 const backendService = new BackendService();
 const authService = new AuthService();
 
-const AppBar : React.FC<unknown> = () => {
-  const {state: {instance}, dispatch} = useStateValue();
+const AppBar: React.FC<unknown> = () => {
+  const { state: { instance }, dispatch } = useStateValue();
 
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState<Element|null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const open = Boolean(anchorEl);
 
   const handleMenu = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    //const element: unknown = ;
     setAnchorEl(event.currentTarget);
   };
 
@@ -65,36 +64,36 @@ const AppBar : React.FC<unknown> = () => {
             EC2 Controller
           </Typography>
           <div>
-              <IconButton disabled={instance.loading} onClick={handleRefreshButton}>
-                <Refresh />
-              </IconButton>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </Menu>
-            </div>
+            <IconButton disabled={instance.loading} onClick={handleRefreshButton}>
+              <Refresh />
+            </IconButton>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={open}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
+          </div>
         </Toolbar>
       </MuiAppBar>
     </div>

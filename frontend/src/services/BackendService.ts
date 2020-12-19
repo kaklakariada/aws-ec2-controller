@@ -8,7 +8,7 @@ export class BackendService {
 
     apiGateway = API;
 
-    dispatchGetInstances(dispatch: DispatchType) {
+    dispatchGetInstances(dispatch: DispatchType): void {
         dispatch({ type: LOADING });
         this.getInstances().then((instances) =>
             dispatch({ type: LOADED, payload: instances })

@@ -18,11 +18,11 @@ export interface InstanceJson {
 export class Instance {
     json: InstanceJson;
     constructor(json: InstanceJson) { this.json = json; }
-    get id() { return this.json.id; }
-    get name() { return this.json.name; }
-    get publicIpAddress() { return this.json.publicIpAddress; }
-    get state() { return this.json.state; }
-    get running() { return this.state === "running"; }
+    get id(): string { return this.json.id; }
+    get name(): string { return this.json.name; }
+    get publicIpAddress(): string | undefined { return this.json.publicIpAddress; }
+    get state(): string { return this.json.state; }
+    get running(): boolean { return this.state === "running"; }
     get stopped(): boolean { return this.state === "stopped"; }
     get dnsDomain(): string | undefined { return this.json.dnsEntry ? this.json.dnsEntry.domain : undefined; }
     get dnsIpAddress(): string | undefined { return this.json.dnsEntry ? this.json.dnsEntry.ip : undefined; }

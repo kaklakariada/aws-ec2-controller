@@ -70,7 +70,7 @@ const InstanceItem: FunctionComponent<{ instance: Instance }> = ({ instance }) =
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [resultMessage, setResultMessage] = React.useState("");
 
-    function handleCloseSnackbar(event: any) {
+    function handleCloseSnackbar() {
         setSnackbarOpen(false);
     }
 

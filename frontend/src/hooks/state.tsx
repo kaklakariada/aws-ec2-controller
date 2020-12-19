@@ -21,15 +21,15 @@ interface Arg {
   children: JSX.Element[];
 }
 
-export const StateProvider = ({ reducer, initialState: initState, children }: Arg) => {
+export function StateProvider({ reducer, initialState: initState, children }: Arg): JSX.Element {
   const [state, dispatch] = React.useReducer(reducer, initState);
   return (
     <StateContext.Provider value={{ dispatch, state }}>
       {children}
     </StateContext.Provider>
   );
-};
+}
 
-export const useStateValue = () => {
+export function useStateValue(): IStateContext {
   return React.useContext(StateContext);
-};
+}

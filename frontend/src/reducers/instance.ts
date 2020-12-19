@@ -4,7 +4,7 @@ import { Action } from "./main";
 export interface InstanceState {
     instances: Instance[];
     loading: boolean;
-    error: any | undefined;
+    error?: Error;
 }
 
 export const LOADING = "instancesLoading";
