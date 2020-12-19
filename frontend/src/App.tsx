@@ -38,9 +38,10 @@ const darkTheme: ThemeOptions = {
   }
 };
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   authenticator: {
-    'text-align': 'center'
+    textAlign: 'center',
+    background: theme.palette.background.default,
   }
 }));
 
