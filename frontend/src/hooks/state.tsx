@@ -29,10 +29,7 @@ export const StateProvider = ({ reducer, initialState: initState, children }: Ar
     </StateContext.Provider>
   );
 };
+
 export const useStateValue = () => {
-  const context = React.useContext(StateContext);
-  //const state = useContext(StateContext);
-  //const state: ReducerState = context[0];
-  //const dispatch: DispatchType = context[1];
-  return context;
+  return React.useContext(StateContext);
 };

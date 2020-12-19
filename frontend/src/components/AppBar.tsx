@@ -25,21 +25,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface Props {
-
-}
-
 const backendService = new BackendService();
 const authService = new AuthService();
 
-const AppBar : React.FC<Props> = (props) => {
+const AppBar : React.FC<unknown> = () => {
   const {state: {instance}, dispatch} = useStateValue();
 
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<Element|null>(null);
   const open = Boolean(anchorEl);
 
-  const handleMenu = (event: any) => {
+  const handleMenu = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    //const element: unknown = ;
     setAnchorEl(event.currentTarget);
   };
 

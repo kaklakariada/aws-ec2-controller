@@ -2,7 +2,6 @@ import instanceReducer, { InstanceState } from "./instance";
 
 export interface ReducerState {
     instance: InstanceState;
-    //dispatch: DispatchType;
 }
 
 export const initialState: ReducerState = {
