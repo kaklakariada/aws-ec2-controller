@@ -1,10 +1,21 @@
 import API from "@aws-amplify/api";
+import { DispatchType } from "../reducers/main";
+import { LOADING, LOADED, ERROR } from "../reducers/instance";
 import { ENDPOINT_NAME } from "./BackendEndpoints";
 import { Instance, InstanceJson } from "./Instance";
 
 export class BackendService {
 
     apiGateway = API;
+
+    dispatchGetInstances(dispatch: DispatchType) {
+        dispatch({ type: LOADING });
+        this.getInstances().then((instances) =>
+            dispatch({ type: LOADED, payload: instances })
+        ).catch((error) =>
+            dispatch({ type: ERROR, error })
+        );
+    }
 
     async getInstances(): Promise<Instance[]> {
         try {
