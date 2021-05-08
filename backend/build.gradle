@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id "com.diffplug.eclipse.apt" version "3.26.0"
+    id "com.diffplug.eclipse.apt" version "3.29.1"
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 sourceCompatibility = 11
@@ -15,9 +15,9 @@ compileTestJava.options.compilerArgs += '-parameters'
 version = '0.0.1'
 
 ext {
-    micronautVersion = '2.3.0'
-    micronautAwsVersion = '2.3.0'
-    awsSdkVersion = '1.11.942'
+    micronautVersion = '2.5.1'
+    micronautAwsVersion = '2.6.0'
+    awsSdkVersion = '1.11.1015'
 }
 
 dependencies {
@@ -48,8 +48,8 @@ dependencies {
     testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "io.micronaut.test:micronaut-test-junit5"
-    testImplementation "org.mockito:mockito-core:3.7.7"
-    testRuntimeOnly "com.fasterxml.jackson.module:jackson-module-afterburner:2.12.1"
+    testImplementation "org.mockito:mockito-core:3.9.0"
+    testRuntimeOnly "com.fasterxml.jackson.module:jackson-module-afterburner:2.12.3"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }
 
