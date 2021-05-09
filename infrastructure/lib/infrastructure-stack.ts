@@ -1,7 +1,8 @@
-import { Stack, Construct, StackProps } from "@aws-cdk/core";
 import { StaticContentConstruct } from "./static-content";
 import { ApiGatewayBackendConstruct } from "./backend";
 import { CognitoAuthConstruct } from "./cognito";
+import { Stack, StackProps } from "aws-cdk-lib";
+import { Construct } from "constructs";
 
 export interface InfrastructureStackProps extends StackProps {
   domain: string;

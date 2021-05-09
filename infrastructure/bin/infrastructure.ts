@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import "source-map-support/register";
-import cdk = require("@aws-cdk/core");
 import { InfrastructureStack, InfrastructureStackProps } from "../lib/infrastructure-stack";
 import { CONFIG } from "../infrastructure-config";
 import { InfrastructureConfig } from "../lib/infrastructure-config-interface";
+import { App } from "aws-cdk-lib";
 
 const config: InfrastructureConfig = CONFIG;
 
@@ -18,5 +18,5 @@ const props: InfrastructureStackProps = {
     contactEmailAddress: config.contactEmailAddress
 };
 
-const app = new cdk.App();
+const app = new App();
 new InfrastructureStack(app, config.stackName, props);

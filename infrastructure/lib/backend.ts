@@ -1,11 +1,9 @@
-import { Construct, Duration, CfnOutput, RemovalPolicy } from "@aws-cdk/core";
-import {
-  RestApi, AuthorizationType, EndpointType, LambdaIntegration,
-  MethodLoggingLevel, IResource, MockIntegration, PassthroughBehavior, LambdaIntegrationOptions
-} from "@aws-cdk/aws-apigateway";
-import { Function, Runtime, Code } from "@aws-cdk/aws-lambda";
-import { Table, BillingMode, AttributeType } from "@aws-cdk/aws-dynamodb";
-import { PolicyStatement, Role } from "@aws-cdk/aws-iam";
+import { CfnOutput, Duration, IResource, RemovalPolicy } from "aws-cdk-lib";
+import { AuthorizationType, EndpointType, LambdaIntegration, LambdaIntegrationOptions, MethodLoggingLevel, MockIntegration, PassthroughBehavior, Resource, RestApi } from "aws-cdk-lib/lib/aws-apigateway";
+import { AttributeType, BillingMode, Table } from "aws-cdk-lib/lib/aws-dynamodb";
+import { PolicyStatement, Role } from "aws-cdk-lib/lib/aws-iam";
+import { Code, Function, Runtime} from "aws-cdk-lib/lib/aws-lambda";
+import { Construct } from "constructs";
 
 interface BackendProps {
   cognitoUserpoolArn: string;
@@ -14,7 +12,7 @@ interface BackendProps {
   userRole: Role;
 }
 
-function addCorsOptions(apiResource: IResource, allowOriginDomain: string, allowMethod: string) {
+function addCorsOptions(apiResource: Resource, allowOriginDomain: string, allowMethod: string) {
   apiResource.addMethod("OPTIONS", new MockIntegration({
     integrationResponses: [{
       statusCode: "200",

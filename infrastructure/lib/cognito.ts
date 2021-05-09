@@ -1,9 +1,14 @@
-import { Construct, Duration, CfnOutput } from "@aws-cdk/core";
-import { Role, FederatedPrincipal } from "@aws-cdk/aws-iam";
-import {
-  CfnUserPool, CfnUserPoolClient, CfnIdentityPool,
-  CfnIdentityPoolRoleAttachment, CfnUserPoolGroup
-} from "@aws-cdk/aws-cognito";
+//import { Construct, Duration, CfnOutput } from "@aws-cdk/core";
+//import { Role, FederatedPrincipal } from "@aws-cdk/aws-iam";
+//import {
+//  CfnUserPool, CfnUserPoolClient, CfnIdentityPool,
+//  CfnIdentityPoolRoleAttachment, CfnUserPoolGroup
+//} from "@aws-cdk/aws-cognito";
+
+import { CfnOutput, Duration } from "aws-cdk-lib";
+import { CfnIdentityPool, CfnIdentityPoolRoleAttachment, CfnUserPool, CfnUserPoolClient, CfnUserPoolGroup } from "aws-cdk-lib/lib/aws-cognito";
+import { FederatedPrincipal, Role } from "aws-cdk-lib/lib/aws-iam";
+import { Construct } from "constructs";
 
 interface CognitoAuthProps {
   domain: string;
