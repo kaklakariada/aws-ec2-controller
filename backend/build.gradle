@@ -16,7 +16,7 @@ version = '0.0.1'
 
 ext {
     micronautVersion = '2.5.1'
-    micronautAwsVersion = '2.6.0'
+    micronautAwsVersion = '2.8.0'
     awsSdkVersion = '1.11.1015'
 }
 
