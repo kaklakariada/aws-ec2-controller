@@ -68,7 +68,7 @@ task runServer(type: JavaExec) {
 
   classpath sourceSets.main.runtimeClasspath
   jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dmicronaut.environments=local')
-  main = "org.itsallcode.aws.ec2.Application"
+  mainClass = "org.itsallcode.aws.ec2.Application"
 }
 
 task buildLambdaZip(type: Zip) {
