@@ -1,4 +1,4 @@
-import { CfnOutput, Duration, IResource, RemovalPolicy } from "aws-cdk-lib";
+import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
 import { AuthorizationType, EndpointType, LambdaIntegration, LambdaIntegrationOptions, MethodLoggingLevel, MockIntegration, PassthroughBehavior, Resource, RestApi } from "aws-cdk-lib/lib/aws-apigateway";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/lib/aws-dynamodb";
 import { PolicyStatement, Role } from "aws-cdk-lib/lib/aws-iam";
