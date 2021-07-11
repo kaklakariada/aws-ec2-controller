@@ -5,15 +5,15 @@ updates:
     schedule:
       interval: "monthly"
 
-  - package-ecosystem: "npm"
-    directory: "/frontend"
-    schedule:
-      interval: "monthly"
-
-  - package-ecosystem: "npm"
-    directory: "/infrastructure"
-    schedule:
-      interval: "monthly"
+#  - package-ecosystem: "npm"
+#    directory: "/frontend"
+#    schedule:
+#      interval: "monthly"
+#
+#  - package-ecosystem: "npm"
+#    directory: "/infrastructure"
+#    schedule:
+#      interval: "monthly"
 
   - package-ecosystem: "github-actions"
     directory: "/"
