@@ -15,7 +15,7 @@ compileTestJava.options.compilerArgs += '-parameters'
 version = '0.0.1'
 
 ext {
-    micronautVersion = '2.5.8'
+    micronautVersion = '2.5.11'
     micronautAwsVersion = '2.8.0'
     awsSdkVersion = '1.12.21'
 }
