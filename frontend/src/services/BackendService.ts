@@ -22,7 +22,7 @@ export class BackendService {
             const respone = await this.apiGateway.get(ENDPOINT_NAME, "/instances", {});
             const rawList: InstanceJson[] = respone.result;
             return rawList.map((i) => new Instance(i));
-        } catch (error) {
+        } catch (error: any) {
             console.warn("Error getting instances", error);
             const errorMessage = error.response ? error.response.data.result : undefined;
             throw new Error(`Error getting instances: ${error}, message: ${errorMessage}`);
@@ -36,7 +36,7 @@ export class BackendService {
             });
             console.log("Set state result", response);
             return response.result;
-        } catch (error) {
+        } catch (error: any) {
             console.warn("Error setting instance state", error);
             const errorMessage = error.response?.data?.result || error.response?.data?.message;
             throw new Error(`Error setting instance state: ${error}, message: ${errorMessage}`);
