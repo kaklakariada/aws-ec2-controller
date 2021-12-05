@@ -32,16 +32,20 @@ To deploy this in your AWS account you will need the following:
 On your local machine you will need the following:
 
 * [Node.js](https://nodejs.org/en/) 12.x
-* JDK 11 (e.g. from [AdoptOpenJDK](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot))
+* Java Development Ket (JDK) 11 (e.g. from [Adoptium](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot))
 * [AWS Command line interface](https://aws.amazon.com/cli/)
-* Configure AWS credentials for the AWS CLI by calling `aws configure`
+  * Configure AWS credentials for the AWS CLI by calling `aws configure`
 
 ### Build backend
 
 ```bash
 cd backend
-./gradlew clean build -i
+./gradlew clean build
 ```
+
+The backend will be deployed later when we deploy the infrastructure.
+
+To update the backend after making changes, first build it `./gradlew build`, then deploy the infrastructure with `npm run cdk deploy`.
 
 ### Configure infrastructure
 
@@ -61,7 +65,7 @@ export const CONFIG: InfrastructureConfig = {
 };
 ```
 
-### Deploy infrastructure
+### Deploy infrastructure and backend
 
 ```bash
 cd infrastructure
