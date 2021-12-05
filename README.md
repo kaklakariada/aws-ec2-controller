@@ -2,7 +2,8 @@
 
 An AWS serverless web app for starting/stopping EC2 instances.
 
-[![Build](https://github.com/kaklakariada/aws-ec2-controller/workflows/Build/badge.svg)](https://github.com/kaklakariada/aws-ec2-controller/actions?query=workflow%3ABuild)
+[![Build](https://github.com/kaklakariada/aws-ec2-controller/actions/workflows/build.yml/badge.svg)](https://github.com/kaklakariada/aws-ec2-controller/actions/workflows/build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=aws-ec2-controller-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=aws-ec2-controller-backend)
 
 ## Architecture
 
@@ -32,16 +33,20 @@ To deploy this in your AWS account you will need the following:
 On your local machine you will need the following:
 
 * [Node.js](https://nodejs.org/en/) 12.x
-* JDK 11 (e.g. from [AdoptOpenJDK](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot))
+* Java Development Ket (JDK) 11 (e.g. from [Adoptium](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot))
 * [AWS Command line interface](https://aws.amazon.com/cli/)
-* Configure AWS credentials for the AWS CLI by calling `aws configure`
+  * Configure AWS credentials for the AWS CLI by calling `aws configure`
 
 ### Build backend
 
 ```bash
 cd backend
-./gradlew clean build -i
+./gradlew clean build
 ```
+
+The backend will be deployed later when we deploy the infrastructure.
+
+To update the backend after making changes, first build it `./gradlew build`, then deploy the infrastructure with `npm run cdk deploy`.
 
 ### Configure infrastructure
 
@@ -61,7 +66,7 @@ export const CONFIG: InfrastructureConfig = {
 };
 ```
 
-### Deploy infrastructure
+### Deploy infrastructure and backend
 
 ```bash
 cd infrastructure

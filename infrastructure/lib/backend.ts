@@ -1,8 +1,8 @@
 import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
-import { AuthorizationType, EndpointType, LambdaIntegration, LambdaIntegrationOptions, MethodLoggingLevel, MockIntegration, PassthroughBehavior, Resource, RestApi } from "aws-cdk-lib/lib/aws-apigateway";
-import { AttributeType, BillingMode, Table } from "aws-cdk-lib/lib/aws-dynamodb";
-import { PolicyStatement, Role } from "aws-cdk-lib/lib/aws-iam";
-import { Code, Function, Runtime} from "aws-cdk-lib/lib/aws-lambda";
+import { AuthorizationType, EndpointType, LambdaIntegration, LambdaIntegrationOptions, MethodLoggingLevel, MockIntegration, PassthroughBehavior, Resource, RestApi } from "aws-cdk-lib/aws-apigateway";
+import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
+import { PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
+import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 
 interface BackendProps {
