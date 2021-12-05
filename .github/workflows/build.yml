@@ -51,7 +51,7 @@ jobs:
 
     - name: Publish Test Report
       uses: scacap/action-surefire-report@v1
-      if: ${{ always() && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
+      if: ${{ always() }}
       with:
         report_paths: 'backend/build/test-results/*/TEST-*.xml'
         github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -60,9 +60,12 @@ jobs:
       if: ${{ env.SONAR_TOKEN != null }}
       run: |
         ./gradlew sonarqube -Dsonar.host.url=https://sonarcloud.io \
-                            -Dsonar.organization=itsallcode \
+                            -Dsonar.organization=kaklakariada-github \
                             -Dsonar.login=$SONAR_TOKEN \
                             --info --warning-mode=summary
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Configure infrastructure
       run: |
