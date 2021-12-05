@@ -2,7 +2,7 @@
 
 An AWS serverless web app for starting/stopping EC2 instances.
 
-[![Build](https://github.com/kaklakariada/aws-ec2-controller/workflows/Build/badge.svg)](https://github.com/kaklakariada/aws-ec2-controller/actions?query=workflow%3ABuild)
+[![Build](https://github.com/kaklakariada/aws-ec2-controller/actions/workflows/build.yml/badge.svg)](https://github.com/kaklakariada/aws-ec2-controller/actions/workflows/build.yml)
 
 ## Architecture
 
