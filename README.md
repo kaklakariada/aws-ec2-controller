@@ -3,6 +3,7 @@
 An AWS serverless web app for starting/stopping EC2 instances.
 
 [![Build](https://github.com/kaklakariada/aws-ec2-controller/actions/workflows/build.yml/badge.svg)](https://github.com/kaklakariada/aws-ec2-controller/actions/workflows/build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=aws-ec2-controller-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=aws-ec2-controller-backend)
 
 ## Architecture
 
