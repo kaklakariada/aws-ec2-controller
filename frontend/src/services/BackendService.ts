@@ -31,9 +31,7 @@ export class BackendService {
 
     async setInstanceState(id: string, state: "start" | "stop"): Promise<string> {
         try {
-            const response = await this.apiGateway.put(ENDPOINT_NAME, `/instances/${id}/state/${state}`, {
-                headers: { "Content-Type": "application/json" }
-            });
+            const response = await this.apiGateway.put(ENDPOINT_NAME, `/instances/${id}/state/${state}`, {});
             console.log("Set state result", response);
             return response.result;
         } catch (error: any) {

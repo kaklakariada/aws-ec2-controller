@@ -15,6 +15,8 @@ import com.amazonaws.services.ec2.model.StopInstancesResult;
 
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.Consumes;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
@@ -36,15 +38,17 @@ public class InstanceController
     @Get("/")
     public HttpResponse<ResultMessage<List<SimpleInstance>>> listInstances()
     {
+        LOG.info("Getting instance list...");
         List<SimpleInstance> result = instanceService.list();
         return HttpResponse.ok(new ResultMessage<>(result));
     }
 
+    @Consumes({ MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON })
     @Put("/{id}/state/{state}")
     public HttpResponse<ResultMessage<String>> startInstance(@PathVariable(name = "id") String id,
             @PathVariable(name = "state") String state)
     {
-        LOG.debug("Setting instance {} state to {}...", id, state);
+        LOG.info("Setting instance {} state to {}...", id, state);
         if ("start".equals(state))
         {
             StartInstancesResult result = instanceService.start(id);
@@ -59,6 +63,7 @@ public class InstanceController
                     : result.getStoppingInstances().get(0).getCurrentState().getName();
             return HttpResponse.ok(new ResultMessage<>("Stopping instance " + id + ", new state: " + newState));
         }
+        LOG.warn("Unknown state {}", state);
         throw new HttpStatusException(HttpStatus.EXPECTATION_FAILED, "Unknown state '" + state + "'");
     }
 }
