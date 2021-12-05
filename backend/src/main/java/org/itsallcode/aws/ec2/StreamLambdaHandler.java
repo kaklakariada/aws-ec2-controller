@@ -46,6 +46,13 @@ public class StreamLambdaHandler implements RequestStreamHandler
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException
     {
         LOG.info("Handle request");
-        handler.proxyStream(inputStream, outputStream, context);
+        try
+        {
+            handler.proxyStream(inputStream, outputStream, context);
+        }
+        catch (Exception e)
+        {
+            LOG.error("Request failed", e);
+        }
     }
 }
