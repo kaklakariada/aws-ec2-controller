@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { CognitoUserAmplify } from '@aws-amplify/ui';
 import MuiAppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -11,7 +12,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { useStateValue } from "../hooks/state";
 import { BackendService } from "../services/BackendService";
-import { AuthService } from "../services/AuthService";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,9 +26,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const backendService = new BackendService();
-const authService = new AuthService();
 
-const AppBar: React.FC<unknown> = () => {
+interface AppBarProps {
+  signOut: (data?: Record<string | number | symbol, any> | undefined) => void;
+  user: CognitoUserAmplify;
+}
+
+const AppBar: React.FC<AppBarProps> = ({user, signOut}) => {
   const { state: { instance }, dispatch } = useStateValue();
 
   const classes = useStyles();
@@ -37,11 +41,6 @@ const AppBar: React.FC<unknown> = () => {
 
   const handleMenu = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setAnchorEl(event.currentTarget);
-  };
-
-  const handleLogout = () => {
-    handleClose();
-    authService.signOut();
   };
 
   const handleClose = () => {
@@ -91,7 +90,8 @@ const AppBar: React.FC<unknown> = () => {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              <MenuItem disabled>Signed in as {user.getUsername()}</MenuItem>
+              <MenuItem onClick={signOut}>Logout</MenuItem>
             </Menu>
           </div>
         </Toolbar>
