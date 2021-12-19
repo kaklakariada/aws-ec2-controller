@@ -1,9 +1,10 @@
 import React from "react";
 import "./App.css";
+import '@aws-amplify/ui-react/styles.css';
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { Authenticator } from '@aws-amplify/ui-react';
 import InstanceList from "./components/InstanceList";
-import { createTheme, ThemeOptions, makeStyles } from "@material-ui/core/styles";
+import { createTheme, ThemeOptions } from "@material-ui/core/styles";
 import { CognitoUserAmplify } from '@aws-amplify/ui';
 import { ThemeProvider } from "@material-ui/styles";
 import AppBar from "./components/AppBar";
@@ -44,18 +45,10 @@ const darkTheme: ThemeOptions = {
   }
 };
 
-const useStyles = makeStyles(theme => ({
-  authenticator: {
-    textAlign: 'center',
-    background: theme.palette.background.default,
-  }
-}));
-
 const ThemedApp: React.FC = () => {
-  const classes = useStyles();
   const theme = createTheme(darkTheme);
   return (
-    <Authenticator className={classes.authenticator}>
+    <Authenticator loginMechanisms={['username']}>
       {({ signOut, user }) => (
         <ThemeProvider theme={theme}>
           <App signOut={signOut} user={user} />

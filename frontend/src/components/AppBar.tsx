@@ -66,9 +66,6 @@ const AppBar: React.FC<AppBarProps> = ({user, signOut}) => {
             <IconButton disabled={instance.loading} onClick={handleRefreshButton}>
               <Refresh />
             </IconButton>
-            <Typography>
-              User: {user.getUsername()}
-            </Typography>
             <IconButton
               aria-label="account of current user"
               aria-controls="menu-appbar"
@@ -93,6 +90,7 @@ const AppBar: React.FC<AppBarProps> = ({user, signOut}) => {
               open={open}
               onClose={handleClose}
             >
+              <MenuItem disabled>Signed in as {user.getUsername()}</MenuItem>
               <MenuItem onClick={signOut}>Logout</MenuItem>
             </Menu>
           </div>
