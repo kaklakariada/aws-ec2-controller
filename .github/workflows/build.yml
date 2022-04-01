@@ -13,27 +13,27 @@ jobs:
     - uses: gradle/wrapper-validation-action@v1
 
     - name: Cache Gradle Wrapper
-      uses: actions/cache@v2
+      uses: actions/cache@v3.0.1
       with:
         path: ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
 
     - name: Cache Gradle packages
-      uses: actions/cache@v2
+      uses: actions/cache@v3.0.1
       with:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
 
     - name: Cache SonarQube packages
-      uses: actions/cache@v2
+      uses: actions/cache@v3.0.1
       with:
         path: ~/.sonar/cache
         key: ${{ runner.os }}-sonar
         restore-keys: ${{ runner.os }}-sonar
 
     - name: Cache Node.js modules
-      uses: actions/cache@v2
+      uses: actions/cache@v3.0.1
       with:
         path: ~/.npm
         key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
