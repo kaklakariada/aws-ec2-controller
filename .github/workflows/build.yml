@@ -8,32 +8,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - uses: gradle/wrapper-validation-action@v1
 
     - name: Cache Gradle Wrapper
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
 
     - name: Cache Gradle packages
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
 
     - name: Cache SonarQube packages
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.sonar/cache
         key: ${{ runner.os }}-sonar
         restore-keys: ${{ runner.os }}-sonar
 
     - name: Cache Node.js modules
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.npm
         key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -46,21 +46,14 @@ jobs:
         distribution: 'adopt'
         java-version: 11
 
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
-        node-version: '14.x'
+        node-version: '16.x'
 
     - name: Build backend
       run: |
         cd backend
         ./gradlew build --info --warning-mode=summary
-
-    - name: Publish Test Report
-      uses: scacap/action-surefire-report@v1
-      if: ${{ always() }}
-      with:
-        report_paths: 'backend/build/test-results/*/TEST-*.xml'
-        github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Sonar analysis
       if: ${{ env.SONAR_TOKEN != null }}
