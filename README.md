@@ -177,7 +177,7 @@ npx npm-check-updates -u && npm install
 
 This project requires some configuration files with deployment specific information, e.g. domain names that should not be stored in a public git repository. That's why these files are added to `.gitignore`. If you want to still keep your configuration under version control you can do so in a private branch (e.g. `private-master`) that you could push to a private repository only.
 
-When switching from `private-master` to the public `master` branch, git will delete the configuration files. To restore them you can use the following command:
+When switching from `private-master` to the public `main` branch, git will delete the configuration files. To restore them you can use the following command:
 
 ```bash
 git show private-master:frontend/deploy/deploy-config.js > frontend/deploy/deploy-config.js \
