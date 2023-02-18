@@ -1,15 +1,16 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { CognitoUserAmplify } from '@aws-amplify/ui';
+import { AmplifyUser } from '@aws-amplify/ui';
 import MuiAppBar from "@material-ui/core/AppBar";
+import IconButton from "@material-ui/core/IconButton";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import MenuIcon from "@material-ui/icons/Menu";
 import Refresh from "@material-ui/icons/Refresh";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
+import React from "react";
+import { SignOut } from '../App';
 import { useStateValue } from "../hooks/state";
 import { BackendService } from "../services/BackendService";
 
@@ -28,11 +29,11 @@ const useStyles = makeStyles(theme => ({
 const backendService = new BackendService();
 
 interface AppBarProps {
-  signOut: (data?: Record<string | number | symbol, any> | undefined) => void;
-  user: CognitoUserAmplify;
+  signOut: SignOut;
+  user: AmplifyUser | undefined;
 }
 
-const AppBar: React.FC<AppBarProps> = ({user, signOut}) => {
+const AppBar: React.FC<AppBarProps> = ({ user, signOut }) => {
   const { state: { instance }, dispatch } = useStateValue();
 
   const classes = useStyles();
@@ -90,7 +91,7 @@ const AppBar: React.FC<AppBarProps> = ({user, signOut}) => {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem disabled>Signed in as {user.getUsername()}</MenuItem>
+              <MenuItem disabled>{user ? "Signed in as ${user.getUsername()}" : "not signed in"}</MenuItem>
               <MenuItem onClick={signOut}>Logout</MenuItem>
             </Menu>
           </div>

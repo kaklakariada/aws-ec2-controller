@@ -1,19 +1,21 @@
-import React from "react";
-import "./App.css";
+import { AmplifyUser } from '@aws-amplify/ui';
+import { Authenticator, UseAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { Authenticator } from '@aws-amplify/ui-react';
-import InstanceList from "./components/InstanceList";
 import { createTheme, ThemeOptions } from "@material-ui/core/styles";
-import { CognitoUserAmplify } from '@aws-amplify/ui';
 import { ThemeProvider } from "@material-ui/styles";
+import React from "react";
+import "./App.css";
 import AppBar from "./components/AppBar";
+import InstanceList from "./components/InstanceList";
 import { StateProvider } from "./hooks/state";
 import { initialState, mainReducer } from "./reducers/main";
 
+export type SignOut = UseAuthenticator['signOut'] | undefined;
+
 interface AppProps {
-  signOut: (data?: Record<string | number | symbol, any> | undefined) => void;
-  user: CognitoUserAmplify;
+  signOut: SignOut;
+  user: AmplifyUser | undefined;
 }
 
 const App: React.FC<AppProps> = ({ signOut, user }) => {
@@ -22,7 +24,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
       <React.StrictMode>
         <StateProvider initialState={initialState} reducer={mainReducer}>
           <CssBaseline />
-          <AppBar user={user} signOut={signOut}/>
+          <AppBar user={user} signOut={signOut} />
           <header className="App-header">
           </header>
           <InstanceList />

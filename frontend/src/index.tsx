@@ -1,9 +1,9 @@
+import Amplify from '@aws-amplify/core';
 import ReactDOM from "react-dom";
-import "./index.css";
 import App from "./App";
-import * as serviceWorker from "./serviceWorker";
-import Amplify from "aws-amplify";
 import environment from "./environment";
+import "./index.css";
+import * as serviceWorker from "./serviceWorker";
 
 Amplify.configure(environment.amplifyConfig);
 
