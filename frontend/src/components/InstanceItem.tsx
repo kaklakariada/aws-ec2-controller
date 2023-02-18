@@ -1,17 +1,17 @@
 import React, { useState, FunctionComponent } from "react";
 import { BackendService } from "../services/BackendService";
 import { Instance } from "../services/Instance";
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
-import Snackbar from "@material-ui/core/Snackbar";
-import Typography from "@material-ui/core/Typography";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import CheckIcon from "@material-ui/icons/Check";
+import makeStyles from '@mui/styles/makeStyles';
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import CheckIcon from "@mui/icons-material/Check";
 
 import humanizeDuration, { Options } from "humanize-duration";
 
@@ -148,8 +148,13 @@ const InstanceItem: FunctionComponent<{ instance: Instance }> = ({ instance }) =
                 onClose={handleCloseSnackbar}
                 message={<span>{resultMessage}</span>}
                 action={[
-                    <IconButton key="close" aria-label="close" color="inherit"
-                        className={classes.closeSnackbar} onClick={handleCloseSnackbar}>
+                    <IconButton
+                        key="close"
+                        aria-label="close"
+                        color="inherit"
+                        className={classes.closeSnackbar}
+                        onClick={handleCloseSnackbar}
+                        size="large">
                         <CloseIcon />
                     </IconButton>]}
             />

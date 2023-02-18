@@ -1,15 +1,22 @@
 import { AmplifyUser } from '@aws-amplify/ui';
 import { Authenticator, UseAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import CssBaseline from "@material-ui/core/CssBaseline";
-import { createTheme, ThemeOptions } from "@material-ui/core/styles";
-import { ThemeProvider } from "@material-ui/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { createTheme, DeprecatedThemeOptions, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider, Theme, StyledEngineProvider } from "@mui/styles";
 import React from "react";
 import "./App.css";
 import AppBar from "./components/AppBar";
 import InstanceList from "./components/InstanceList";
 import { StateProvider } from "./hooks/state";
 import { initialState, mainReducer } from "./reducers/main";
+
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
 
 export type SignOut = UseAuthenticator['signOut'] | undefined;
 
@@ -34,9 +41,9 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
   );
 };
 
-const darkTheme: ThemeOptions = {
+const darkTheme: DeprecatedThemeOptions = {
   palette: {
-    type: "dark"
+    mode: "dark"
   },
   overrides: {
     MuiAppBar: {
@@ -48,13 +55,15 @@ const darkTheme: ThemeOptions = {
 };
 
 const ThemedApp: React.FC = () => {
-  const theme = createTheme(darkTheme);
+  const theme = createTheme(adaptV4Theme(darkTheme));
   return (
     <Authenticator loginMechanisms={['username']}>
       {({ signOut, user }) => (
-        <ThemeProvider theme={theme}>
-          <App signOut={signOut} user={user} />
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <App signOut={signOut} user={user} />
+          </ThemeProvider>
+        </StyledEngineProvider>
       )}
     </Authenticator>
   );

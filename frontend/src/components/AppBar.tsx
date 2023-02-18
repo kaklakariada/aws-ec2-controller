@@ -1,14 +1,14 @@
 import { AmplifyUser } from '@aws-amplify/ui';
-import MuiAppBar from "@material-ui/core/AppBar";
-import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import { makeStyles } from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import MenuIcon from "@material-ui/icons/Menu";
-import Refresh from "@material-ui/icons/Refresh";
+import MuiAppBar from "@mui/material/AppBar";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import makeStyles from '@mui/styles/makeStyles';
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import MenuIcon from "@mui/icons-material/Menu";
+import Refresh from "@mui/icons-material/Refresh";
 import React from "react";
 import { SignOut } from '../App';
 import { useStateValue } from "../hooks/state";
@@ -57,14 +57,19 @@ const AppBar: React.FC<AppBarProps> = ({ user, signOut }) => {
     <div className={classes.root}>
       <MuiAppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+            size="large">
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             EC2 Controller
           </Typography>
           <div>
-            <IconButton disabled={instance.loading} onClick={handleRefreshButton}>
+            <IconButton disabled={instance.loading} onClick={handleRefreshButton} size="large">
               <Refresh />
             </IconButton>
             <IconButton
@@ -73,7 +78,7 @@ const AppBar: React.FC<AppBarProps> = ({ user, signOut }) => {
               aria-haspopup="true"
               onClick={handleMenu}
               color="inherit"
-            >
+              size="large">
               <AccountCircle />
             </IconButton>
             <Menu
