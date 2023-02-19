@@ -2,8 +2,6 @@ package org.itsallcode.aws.ec2;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.itsallcode.aws.ec2.model.ResultMessage;
 import org.itsallcode.aws.ec2.model.SimpleInstance;
 import org.itsallcode.aws.ec2.service.InstanceService;
@@ -22,15 +20,16 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Put;
 import io.micronaut.http.exceptions.HttpStatusException;
+import jakarta.inject.Inject;
 
 @Controller("/instances")
 public class InstanceController
 {
     private static final Logger LOG = LoggerFactory.getLogger(InstanceController.class);
-    private InstanceService instanceService;
+    private final InstanceService instanceService;
 
     @Inject
-    public InstanceController(InstanceService instanceService)
+    public InstanceController(final InstanceService instanceService)
     {
         this.instanceService = instanceService;
     }
@@ -39,27 +38,27 @@ public class InstanceController
     public HttpResponse<ResultMessage<List<SimpleInstance>>> listInstances()
     {
         LOG.info("Getting instance list...");
-        List<SimpleInstance> result = instanceService.list();
+        final List<SimpleInstance> result = instanceService.list();
         return HttpResponse.ok(new ResultMessage<>(result));
     }
 
     @Consumes({ MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON })
     @Put("/{id}/state/{state}")
-    public HttpResponse<ResultMessage<String>> startInstance(@PathVariable(name = "id") String id,
-            @PathVariable(name = "state") String state)
+    public HttpResponse<ResultMessage<String>> startInstance(@PathVariable(name = "id") final String id,
+            @PathVariable(name = "state") final String state)
     {
         LOG.info("Setting instance {} state to {}...", id, state);
         if ("start".equals(state))
         {
-            StartInstancesResult result = instanceService.start(id);
-            String newState = result.getStartingInstances().isEmpty() ? null
+            final StartInstancesResult result = instanceService.start(id);
+            final String newState = result.getStartingInstances().isEmpty() ? null
                     : result.getStartingInstances().get(0).getCurrentState().getName();
             return HttpResponse.ok(new ResultMessage<>("Starting instance " + id + ", new state: " + newState));
         }
         if ("stop".equals(state))
         {
-            StopInstancesResult result = instanceService.stop(id);
-            String newState = result.getStoppingInstances().isEmpty() ? null
+            final StopInstancesResult result = instanceService.stop(id);
+            final String newState = result.getStoppingInstances().isEmpty() ? null
                     : result.getStoppingInstances().get(0).getCurrentState().getName();
             return HttpResponse.ok(new ResultMessage<>("Stopping instance " + id + ", new state: " + newState));
         }

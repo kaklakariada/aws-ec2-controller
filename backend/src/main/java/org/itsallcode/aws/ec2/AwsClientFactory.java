@@ -2,9 +2,6 @@ package org.itsallcode.aws.ec2;
 
 import java.time.Clock;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.itsallcode.aws.ec2.dynamodb.DynamoDbTableNameResolver;
 
 import com.amazonaws.regions.Regions;
@@ -21,6 +18,8 @@ import com.amazonaws.services.route53.AmazonRoute53Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micronaut.context.annotation.Factory;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 
 @Factory
 public class AwsClientFactory
@@ -40,9 +39,10 @@ public class AwsClientFactory
     }
 
     @Singleton
-    public DynamoDBMapper dynamoDbMapper(AmazonDynamoDB client, DynamoDbTableNameResolver tableNameResolver)
+    public DynamoDBMapper dynamoDbMapper(final AmazonDynamoDB client, final DynamoDbTableNameResolver tableNameResolver)
     {
-        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withTableNameResolver(tableNameResolver).build();
+        final DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withTableNameResolver(tableNameResolver)
+                .build();
         return new DynamoDBMapper(client, config);
     }
 
