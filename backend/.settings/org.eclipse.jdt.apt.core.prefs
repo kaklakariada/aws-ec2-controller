@@ -1,7 +1,5 @@
-#
-#Sun Jan 12 12:16:03 CET 2020
-org.eclipse.jdt.apt.aptEnabled=true
-org.eclipse.jdt.apt.genTestSrcDir=.apt_generated_tests
-org.eclipse.jdt.apt.reconcileEnabled=true
-org.eclipse.jdt.apt.genSrcDir=.apt_generated
 eclipse.preferences.version=1
+org.eclipse.jdt.apt.aptEnabled=true
+org.eclipse.jdt.apt.genSrcDir=bin/generated-sources/annotations
+org.eclipse.jdt.apt.genTestSrcDir=bin/generated-test-sources/annotations
+org.eclipse.jdt.apt.reconcileEnabled=true

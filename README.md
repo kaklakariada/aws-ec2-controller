@@ -151,6 +151,12 @@ cd backend
 ./gradlew runServer
 ```
 
+#### Check for dependency updates
+
+```bash
+./gradlew dependencyUpdates
+```
+
 #### Configure eclipse project
 
 ```bash
