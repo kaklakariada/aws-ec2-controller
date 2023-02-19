@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +21,8 @@ import com.amazonaws.services.pricing.model.GetProductsRequest;
 import com.amazonaws.services.pricing.model.GetProductsResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.inject.Inject;
 
 public class PricingService
 {
@@ -35,32 +35,32 @@ public class PricingService
     private final DecimalFormat decimalFormat;
 
     @Inject
-    public PricingService(AWSPricing pricing, ObjectMapper objectMapper)
+    public PricingService(final AWSPricing pricing, final ObjectMapper objectMapper)
     {
         this.pricing = pricing;
         this.objectMapper = objectMapper;
         decimalFormat = createDecimalFormat();
     }
 
-    public Optional<BigDecimal> getPriceInUsDollarPerHour(String location, String instanceType)
+    public Optional<BigDecimal> getPriceInUsDollarPerHour(final String location, final String instanceType)
     {
         if (!ENABLED)
         {
             return Optional.empty();
         }
-        List<Filter> filters = buildFilter(location, instanceType);
+        final List<Filter> filters = buildFilter(location, instanceType);
         LOG.debug("Get products for filter {}", filters);
-        String priceListString = getPriceListString(filters);
-        JsonNode priceList = parse(priceListString);
-        String usDollarPerHourString = extractPricePerHour(priceList);
-        BigDecimal usDollarPerHour = parseBigDecimal(usDollarPerHourString);
+        final String priceListString = getPriceListString(filters);
+        final JsonNode priceList = parse(priceListString);
+        final String usDollarPerHourString = extractPricePerHour(priceList);
+        final BigDecimal usDollarPerHour = parseBigDecimal(usDollarPerHourString);
         LOG.debug("Got price {} per hour for instance type {}", usDollarPerHour, instanceType);
         return Optional.of(usDollarPerHour);
     }
 
-    private String getPriceListString(List<Filter> filters)
+    private String getPriceListString(final List<Filter> filters)
     {
-        GetProductsResult products = pricing.getProducts(getProductRequest(filters));
+        final GetProductsResult products = pricing.getProducts(getProductRequest(filters));
         if (products.getPriceList().size() != 1)
         {
             throw new IllegalStateException("Expected one price list entry but got " + products.getPriceList().size()
@@ -69,12 +69,12 @@ public class PricingService
         return products.getPriceList().get(0);
     }
 
-    private GetProductsRequest getProductRequest(List<Filter> filters)
+    private GetProductsRequest getProductRequest(final List<Filter> filters)
     {
         return new GetProductsRequest().withServiceCode("AmazonEC2").withFilters(filters);
     }
 
-    private List<Filter> buildFilter(String location, String instanceType)
+    private List<Filter> buildFilter(final String location, final String instanceType)
     {
         return asList(filter("location", location), //
                 filter("instanceType", instanceType), //
@@ -83,24 +83,24 @@ public class PricingService
                 filter("operation", "RunInstances"));
     }
 
-    private String extractPricePerHour(JsonNode readTree)
+    private String extractPricePerHour(final JsonNode readTree)
     {
-        JsonNode onDemand = readTree.get("terms").get("OnDemand");
+        final JsonNode onDemand = readTree.get("terms").get("OnDemand");
         if (onDemand.size() != 1)
         {
             throw new IllegalStateException("Expected one OnDemand pricing, found " + onDemand);
         }
 
-        String onDemandField = onDemand.fieldNames().next();
-        JsonNode price = onDemand.get(onDemandField);
-        JsonNode priceDimensions = price.get("priceDimensions");
+        final String onDemandField = onDemand.fieldNames().next();
+        final JsonNode price = onDemand.get(onDemandField);
+        final JsonNode priceDimensions = price.get("priceDimensions");
         assert priceDimensions.size() == 1;
         if (priceDimensions.size() != 1)
         {
             throw new IllegalStateException("Expected one price dimension, found " + priceDimensions);
         }
-        JsonNode firstPrice = priceDimensions.get(priceDimensions.fieldNames().next());
-        String unit = firstPrice.get("unit").asText();
+        final JsonNode firstPrice = priceDimensions.get(priceDimensions.fieldNames().next());
+        final String unit = firstPrice.get("unit").asText();
         if (!unit.equals("Hrs"))
         {
             throw new IllegalStateException("Expected unit Hrs but got " + unit);
@@ -109,13 +109,13 @@ public class PricingService
         return firstPrice.get("pricePerUnit").get("USD").asText();
     }
 
-    private BigDecimal parseBigDecimal(String usDollarPerHour)
+    private BigDecimal parseBigDecimal(final String usDollarPerHour)
     {
         try
         {
             return (BigDecimal) decimalFormat.parse(usDollarPerHour);
         }
-        catch (ParseException e)
+        catch (final ParseException e)
         {
             throw new IllegalStateException("Error parsing big decimal " + usDollarPerHour);
         }
@@ -123,24 +123,24 @@ public class PricingService
 
     private static DecimalFormat createDecimalFormat()
     {
-        DecimalFormat nf = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+        final DecimalFormat nf = (DecimalFormat) NumberFormat.getInstance(Locale.US);
         nf.setParseBigDecimal(true);
         return nf;
     }
 
-    private JsonNode parse(String json)
+    private JsonNode parse(final String json)
     {
         try
         {
             return objectMapper.readTree(json);
         }
-        catch (IOException e)
+        catch (final IOException e)
         {
             throw new IllegalStateException("Error parsing json " + json, e);
         }
     }
 
-    private Filter filter(String field, String value)
+    private Filter filter(final String field, final String value)
     {
         return new Filter().withType(FilterType.TERM_MATCH).withField(field).withValue(value);
     }

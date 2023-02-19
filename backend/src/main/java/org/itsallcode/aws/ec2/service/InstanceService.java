@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-import javax.inject.Inject;
-
 import org.itsallcode.aws.ec2.dynamodb.DynamoDbInstance;
 import org.itsallcode.aws.ec2.model.DnsEntry;
 import org.itsallcode.aws.ec2.model.InstancePricing;
@@ -27,6 +25,7 @@ import com.amazonaws.services.ec2.model.StopInstancesResult;
 import io.micronaut.context.env.Environment;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
+import jakarta.inject.Inject;
 
 public class InstanceService
 {
@@ -42,8 +41,9 @@ public class InstanceService
     private final Environment env;
 
     @Inject
-    public InstanceService(Ec2Service ec2Service, DynamoDbInstanceService dynamoDbInstanceService,
-            Route53Client route53Client, PricingService pricingService, Clock clock, Environment env)
+    public InstanceService(final Ec2Service ec2Service, final DynamoDbInstanceService dynamoDbInstanceService,
+            final Route53Client route53Client, final PricingService pricingService, final Clock clock,
+            final Environment env)
     {
         this.ec2Service = ec2Service;
         this.dynamoDbInstanceService = dynamoDbInstanceService;
@@ -55,18 +55,18 @@ public class InstanceService
 
     public List<SimpleInstance> list()
     {
-        Map<String, DynamoDbInstance> instances = getDynamoDbInstances().stream()
+        final Map<String, DynamoDbInstance> instances = getDynamoDbInstances().stream()
                 .collect(toMap(DynamoDbInstance::getId, Function.identity()));
 
-        List<Instance> ec2Instances = ec2Service.list();
+        final List<Instance> ec2Instances = ec2Service.list();
 
-        Map<String, DnsEntry> dnsEntries = route53Client.getDnsEntries(getHostedZoneId()).stream()
+        final Map<String, DnsEntry> dnsEntries = route53Client.getDnsEntries(getHostedZoneId()).stream()
                 .collect(toMap(DnsEntry::getDomain, Function.identity()));
 
         LOG.info("Found {} dynamodb entries, {} instances and {} DNS entries", instances.size(), ec2Instances.size(),
                 dnsEntries.size());
 
-        List<SimpleInstance> simpleInstances = ec2Instances.stream()
+        final List<SimpleInstance> simpleInstances = ec2Instances.stream()
                 .map(instance -> createInstance(instances, dnsEntries, instance))
                 .sorted(Comparator.comparing(SimpleInstance::getSortOrder)) //
                 .collect(toList());
@@ -82,17 +82,20 @@ public class InstanceService
                 "Hosted zone id not configured as property '" + HOSTED_ZONE_ID_PROPERTY + "'"));
     }
 
-    private SimpleInstance createInstance(Map<String, DynamoDbInstance> instances, Map<String, DnsEntry> dnsEntries,
-            Instance instance)
+    private SimpleInstance createInstance(final Map<String, DynamoDbInstance> instances,
+            final Map<String, DnsEntry> dnsEntries,
+            final Instance instance)
     {
-        String id = instance.getInstanceId();
-        DynamoDbInstance dynamoDbInstance = instances.get(id);
-        String domain = dynamoDbInstance != null ? dynamoDbInstance.getDomain() : null;
-        DnsEntry dnsEntry = domain != null ? dnsEntries.get(domain) : null;
-        Optional<BigDecimal> usDollarPerHour = pricingService.getPriceInUsDollarPerHour("EU (Ireland)",
+        final String id = instance.getInstanceId();
+        final DynamoDbInstance dynamoDbInstance = instances.get(id);
+        final String domain = dynamoDbInstance != null ? dynamoDbInstance.getDomain() : null;
+        final DnsEntry dnsEntry = domain != null ? dnsEntries.get(domain) : null;
+        final Optional<BigDecimal> usDollarPerHour = pricingService.getPriceInUsDollarPerHour("EU (Ireland)",
                 instance.getInstanceType());
-        Optional<InstancePricing> pricing = usDollarPerHour.map(price -> new InstancePricing(instance, clock, price));
-        SimpleInstance simpleInstance = new SimpleInstance(instance, dynamoDbInstance, dnsEntry, pricing.orElse(null));
+        final Optional<InstancePricing> pricing = usDollarPerHour
+                .map(price -> new InstancePricing(instance, clock, price));
+        final SimpleInstance simpleInstance = new SimpleInstance(instance, dynamoDbInstance, dnsEntry,
+                pricing.orElse(null));
         LOG.info("Found instance {}", simpleInstance);
         return simpleInstance;
     }
@@ -102,22 +105,22 @@ public class InstanceService
         return dynamoDbInstanceService.list();
     }
 
-    public StartInstancesResult start(String id)
+    public StartInstancesResult start(final String id)
     {
         assertInstanceWhitelisted(id);
         return ec2Service.start(id);
     }
 
-    public StopInstancesResult stop(String id)
+    public StopInstancesResult stop(final String id)
     {
         assertInstanceWhitelisted(id);
         return ec2Service.stop(id);
     }
 
-    private void assertInstanceWhitelisted(String id)
+    private void assertInstanceWhitelisted(final String id)
     {
-        DynamoDbInstance instance = dynamoDbInstanceService.getInstance(id);
-        boolean whitelisted = instance == null ? false : instance.isControlAllowed();
+        final DynamoDbInstance instance = dynamoDbInstanceService.getInstance(id);
+        final boolean whitelisted = instance == null ? false : instance.isControlAllowed();
         if (!whitelisted)
         {
             throw new HttpStatusException(HttpStatus.FORBIDDEN, "Controlling instance " + id + " is not allowed");
