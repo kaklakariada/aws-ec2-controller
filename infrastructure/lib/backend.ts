@@ -2,7 +2,7 @@ import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
 import { AuthorizationType, EndpointType, LambdaIntegration, LambdaIntegrationOptions, MethodLoggingLevel, MockIntegration, PassthroughBehavior, Resource, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
-import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
+import { CfnFunction, Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 
 interface BackendProps {
@@ -88,6 +88,12 @@ export class ApiGatewayBackendConstruct extends Construct {
       ]
     });
 
+    const listInstancesLambdaAlias = listInstancesLambda.addAlias("prod");
+    const startStopInstancesLambdaAlias = startStopInstancesLambda.addAlias("prod");
+
+    enableSnapStart(listInstancesLambda);
+    enableSnapStart(startStopInstancesLambda);
+
     const api = new RestApi(this, "RestApi", {
       restApiName: "EC2 Controller",
       description: "Backend for EC2 Controller",
@@ -122,10 +128,10 @@ export class ApiGatewayBackendConstruct extends Construct {
       allowTestInvoke: true
     };
     const getInstancesMethod = instancesResource.addMethod("GET",
-      new LambdaIntegration(listInstancesLambda, options),
+      new LambdaIntegration(listInstancesLambdaAlias, options),
       { operationName: "ListInstances" });
     const putInstanceStateMethod = instanceStateResource.addMethod("PUT",
-      new LambdaIntegration(startStopInstancesLambda, options),
+      new LambdaIntegration(startStopInstancesLambdaAlias, options),
       { operationName: "StartStopInstance" });
 
     addCorsOptions(instancesResource, props.domain, "GET");
@@ -147,4 +153,10 @@ export class ApiGatewayBackendConstruct extends Construct {
       value: instancesTable.tableName
     });
   }
+}
+
+function enableSnapStart(lambda: Function) {
+  (lambda.node.defaultChild as CfnFunction).addPropertyOverride('SnapStart', {
+    ApplyOn: 'PublishedVersions',
+  });
 }
