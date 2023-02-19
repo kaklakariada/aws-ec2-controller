@@ -1,41 +1,30 @@
+/** @jsxImportSource @emotion/react */
+import { AmplifyUser } from '@aws-amplify/ui';
+import { css } from '@emotion/react';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import MenuIcon from "@mui/icons-material/Menu";
+import RefreshIcon from '@mui/icons-material/Refresh';
+import MuiAppBar from "@mui/material/AppBar";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { CognitoUserAmplify } from '@aws-amplify/ui';
-import MuiAppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import Refresh from "@material-ui/icons/Refresh";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
+import { SignOut } from '../App';
 import { useStateValue } from "../hooks/state";
 import { BackendService } from "../services/BackendService";
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
 
 const backendService = new BackendService();
 
 interface AppBarProps {
-  signOut: (data?: Record<string | number | symbol, any> | undefined) => void;
-  user: CognitoUserAmplify;
+  signOut: SignOut;
+  user: AmplifyUser | undefined;
 }
 
-const AppBar: React.FC<AppBarProps> = ({user, signOut}) => {
+const AppBar: React.FC<AppBarProps> = ({ user, signOut }) => {
   const { state: { instance }, dispatch } = useStateValue();
 
-  const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const open = Boolean(anchorEl);
 
@@ -53,18 +42,22 @@ const AppBar: React.FC<AppBarProps> = ({user, signOut}) => {
   };
 
   return (
-    <div className={classes.root}>
+    <div css={css`flex-grow: 1`}>
       <MuiAppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            size="large">
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" css={css`flex-grow: 1`}>
             EC2 Controller
           </Typography>
           <div>
-            <IconButton disabled={instance.loading} onClick={handleRefreshButton}>
-              <Refresh />
+            <IconButton disabled={instance.loading} onClick={handleRefreshButton} size="large">
+              <RefreshIcon />
             </IconButton>
             <IconButton
               aria-label="account of current user"
@@ -72,8 +65,8 @@ const AppBar: React.FC<AppBarProps> = ({user, signOut}) => {
               aria-haspopup="true"
               onClick={handleMenu}
               color="inherit"
-            >
-              <AccountCircle />
+              size="large">
+              <AccountCircleIcon />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -90,13 +83,13 @@ const AppBar: React.FC<AppBarProps> = ({user, signOut}) => {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem disabled>Signed in as {user.getUsername()}</MenuItem>
+              <MenuItem disabled>{user ? "Signed in as ${user.getUsername()}" : "not signed in"}</MenuItem>
               <MenuItem onClick={signOut}>Logout</MenuItem>
             </Menu>
           </div>
         </Toolbar>
       </MuiAppBar>
-    </div>
+    </div >
   );
 }
 

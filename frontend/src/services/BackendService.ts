@@ -1,4 +1,4 @@
-import API from "@aws-amplify/api";
+import { API } from "@aws-amplify/api";
 import { DispatchType } from "../reducers/main";
 import { LOADING, LOADED, ERROR } from "../reducers/instance";
 import { ENDPOINT_NAME } from "./BackendEndpoints";
