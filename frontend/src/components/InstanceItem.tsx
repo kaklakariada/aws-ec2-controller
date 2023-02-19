@@ -1,33 +1,23 @@
-import React, { useState, FunctionComponent } from "react";
-import { BackendService } from "../services/BackendService";
-import { Instance } from "../services/Instance";
-import makeStyles from '@mui/styles/makeStyles';
+/* eslint-disable react/react-in-jsx-scope -- Unaware of jsxImportSource */
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import Snackbar from "@mui/material/Snackbar";
-import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import CheckIcon from "@mui/icons-material/Check";
+import Snackbar from "@mui/material/Snackbar";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import React, { FunctionComponent, useState } from "react";
+import { BackendService } from "../services/BackendService";
+import { Instance } from "../services/Instance";
 
 import humanizeDuration, { Options } from "humanize-duration";
 
 const backendService = new BackendService();
-
-const useStyles = makeStyles((theme) => ({
-    card: {
-        minWidth: 275,
-    },
-    actions: {
-        justifyContent: "center"
-    },
-    closeSnackbar: {
-        padding: theme.spacing(0.5)
-    },
-}));
 
 function getStartStopButtonTooltip(instance: Instance) {
     if (!instance.controlAllowed) {
@@ -65,7 +55,6 @@ function getReadableDuration(durationSeconds: number | undefined): string {
 }
 
 const InstanceItem: FunctionComponent<{ instance: Instance }> = ({ instance }) => {
-    const classes = useStyles();
     const [loading, setLoading] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [resultMessage, setResultMessage] = React.useState("");
@@ -95,7 +84,7 @@ const InstanceItem: FunctionComponent<{ instance: Instance }> = ({ instance }) =
     const instanceStateIcon = getInstanceStateIcon(instance);
     const readableUptime = getReadableDuration(instance.uptimeSeconds);
     return (
-        <Card className={classes.card}>
+        <Card >
             <CardContent>
                 <Typography variant="h5" component="h2">
                     {`${instance.name} (${instance.state})`} {instanceStateIcon}
@@ -125,17 +114,17 @@ const InstanceItem: FunctionComponent<{ instance: Instance }> = ({ instance }) =
                             `${instance.dnsIpAddress} (TTL: ${instance.dnsTtl}s)`}
                     </Typography>
                 }
-            {
-                instance.controlAllowed &&
-                <CardActions className={classes.actions}>
-                    <Tooltip title={startStopButtonTooltip}>
-                        <Button size="small" onClick={startStopInstance}
-                            disabled={loading || (!instance.running && !instance.stopped)}>
+                {
+                    instance.controlAllowed &&
+                    <CardActions css={css`justify-content: center`}>
+                        <Tooltip title={startStopButtonTooltip}>
+                            <Button size="small" onClick={startStopInstance}
+                                disabled={loading || (!instance.running && !instance.stopped)}>
                                 {startStopButtonLabel}
-                        </Button>
-                    </Tooltip>
-                </CardActions>
-            }
+                            </Button>
+                        </Tooltip>
+                    </CardActions>
+                }
             </CardContent>
 
             <Snackbar
@@ -152,13 +141,12 @@ const InstanceItem: FunctionComponent<{ instance: Instance }> = ({ instance }) =
                         key="close"
                         aria-label="close"
                         color="inherit"
-                        className={classes.closeSnackbar}
                         onClick={handleCloseSnackbar}
                         size="large">
                         <CloseIcon />
                     </IconButton>]}
             />
-        </Card>
+        </Card >
     );
 }
 

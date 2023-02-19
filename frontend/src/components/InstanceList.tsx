@@ -1,24 +1,18 @@
+/* eslint-disable react/react-in-jsx-scope -- Unaware of jsxImportSource */
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+import CircularProgress from "@mui/material/CircularProgress";
+import Container from "@mui/material/Container";
 import React, { useEffect } from "react";
+import { useStateValue } from "../hooks/state";
 import { BackendService } from "../services/BackendService";
 import InstanceItem from "./InstanceItem";
-import makeStyles from '@mui/styles/makeStyles';
-import Container from "@mui/material/Container";
-import CircularProgress from "@mui/material/CircularProgress";
-import { useStateValue } from "../hooks/state";
 
 const backendService = new BackendService();
 
-const useStyles = makeStyles((theme) => ({
-    circularProgress: {
-        margin: theme.spacing(2)
-    },
-    errorMessage: {
-        margin: theme.spacing(2)
-    }
-}));
 
 const InstanceList: React.FC = () => {
-    const classes = useStyles();
+
     const { state: { instance }, dispatch } = useStateValue();
 
     function fetchData() {
@@ -29,14 +23,14 @@ const InstanceList: React.FC = () => {
     }, []);
     return (
         <Container>
-            {instance.error ? <div className={classes.errorMessage}>{`Error: ${instance.error}`}</div> :
+            {instance.error ? <div css={css`margin: 2em`} >{`Error: ${instance.error}`}</div> :
                 <div>
                     {instance.loading
-                        ? <CircularProgress className={classes.circularProgress}/>
+                        ? <CircularProgress css={css`margin: 2em`} />
                         : instance.instances.map((i) => <InstanceItem key={i.id} instance={i} />)}
                 </div>
             }
-        </Container>
+        </Container >
     );
 };
 
