@@ -32,8 +32,8 @@ To deploy this in your AWS account you will need the following:
 
 On your local machine you will need the following:
 
-* [Node.js](https://nodejs.org/en/) 12.x
-* Java Development Ket (JDK) 11 (e.g. from [Adoptium](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot))
+* [Node.js](https://nodejs.org/en/) 16.x
+* Java Development Kit (JDK) 11 (e.g. from [Adoptium](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot))
 * [AWS Command line interface](https://aws.amazon.com/cli/)
   * Configure AWS credentials for the AWS CLI by calling `aws configure`
 
