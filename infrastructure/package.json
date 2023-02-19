@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "lint": "eslint ./lib ./bin --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint ./lib ./bin --ext .ts,.tsx"
   },
   "devDependencies": {
     "aws-cdk": "^2.65.0",

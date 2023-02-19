@@ -2,7 +2,7 @@ import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
 import { AuthorizationType, EndpointType, LambdaIntegration, LambdaIntegrationOptions, MethodLoggingLevel, MockIntegration, PassthroughBehavior, Resource, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
-import { CfnFunction, Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
+import { CfnFunction, Code, Function as LambdaFunction, Runtime } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 
 interface BackendProps {
@@ -53,7 +53,7 @@ export class ApiGatewayBackendConstruct extends Construct {
     });
 
     const backendCodeAsset = Code.fromAsset("../backend/build/distributions/backend.zip");
-    const listInstancesLambda = new Function(this, "ListInstances", {
+    const listInstancesLambda = new LambdaFunction(this, "ListInstances", {
       handler: "org.itsallcode.aws.ec2.StreamLambdaHandler",
       runtime: Runtime.JAVA_11,
       timeout: Duration.seconds(30),
@@ -71,7 +71,7 @@ export class ApiGatewayBackendConstruct extends Construct {
       new PolicyStatement({ actions: ["pricing:GetProducts"], resources: ["*"] })]
     });
 
-    const startStopInstancesLambda = new Function(this, "StartStopInstances", {
+    const startStopInstancesLambda = new LambdaFunction(this, "StartStopInstances", {
       handler: "org.itsallcode.aws.ec2.StreamLambdaHandler",
       runtime: Runtime.JAVA_11,
       timeout: Duration.seconds(30),
@@ -155,7 +155,7 @@ export class ApiGatewayBackendConstruct extends Construct {
   }
 }
 
-function enableSnapStart(lambda: Function) {
+function enableSnapStart(lambda: LambdaFunction) {
   (lambda.node.defaultChild as CfnFunction).addPropertyOverride('SnapStart', {
     ApplyOn: 'PublishedVersions',
   });
