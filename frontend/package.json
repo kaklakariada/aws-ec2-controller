@@ -23,7 +23,7 @@
     "@mui/lab": "^5.0.0-alpha.120",
     "@mui/material": "^5.11.9",
     "@mui/styles": "^5.11.9",
-    "aws-amplify": "^5.0.15",
+    "aws-amplify": "^5.3.16",
     "humanize-duration": "^3.28.0",
     "immer": "^9.0.19",
     "react": "^17.0.2",
