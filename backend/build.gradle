@@ -113,3 +113,10 @@ jacocoTestReport {
 }
 
 rootProject.tasks["sonarqube"].dependsOn(tasks["jacocoTestReport"])
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "kaklakariada-github"
+    }
+}
