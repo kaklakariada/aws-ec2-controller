@@ -1,12 +1,10 @@
-import { API } from "@aws-amplify/api";
+import { get, put } from 'aws-amplify/api';
 import { DispatchType } from "../reducers/main";
 import { LOADING, LOADED, ERROR } from "../reducers/instance";
 import { ENDPOINT_NAME } from "./BackendEndpoints";
 import { Instance, InstanceJson } from "./Instance";
 
 export class BackendService {
-
-    apiGateway = API;
 
     dispatchGetInstances(dispatch: DispatchType): void {
         dispatch({ type: LOADING });
@@ -19,9 +17,11 @@ export class BackendService {
 
     async getInstances(): Promise<Instance[]> {
         try {
-            const respone = await this.apiGateway.get(ENDPOINT_NAME, "/instances", {});
-            const rawList: InstanceJson[] = respone.result;
-            return rawList.map((i) => new Instance(i));
+            const request = get({ apiName: ENDPOINT_NAME, path: "/instances", options: {} });
+            const response = await (await request.response).body.json();
+            console.log("Got instances", response);
+            const rawList = (response as any).result as InstanceJson[]
+            return (rawList).map((i) => new Instance(i));
         } catch (error: any) {
             console.warn("Error getting instances", error);
             const errorMessage = error.response ? error.response.data.result : undefined;
@@ -31,9 +31,9 @@ export class BackendService {
 
     async setInstanceState(id: string, state: "start" | "stop"): Promise<string> {
         try {
-            const response = await this.apiGateway.put(ENDPOINT_NAME, `/instances/${id}/state/${state}`, {});
-            console.log("Set state result", response);
-            return response.result;
+            const request = put({ apiName: ENDPOINT_NAME, path: `/instances/${id}/state/${state}`, options: {} });
+            console.log("Set state result", request);
+            return JSON.stringify(await (await request.response).body.json());
         } catch (error: any) {
             console.warn("Error setting instance state", error);
             const errorMessage = error.response?.data?.result || error.response?.data?.message;
