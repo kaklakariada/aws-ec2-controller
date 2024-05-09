@@ -55,7 +55,7 @@ export class ApiGatewayBackendConstruct extends Construct {
     const backendCodeAsset = Code.fromAsset("../backend/build/distributions/backend.zip");
     const listInstancesLambda = new LambdaFunction(this, "ListInstances", {
       handler: "org.itsallcode.aws.ec2.StreamLambdaHandler",
-      runtime: Runtime.JAVA_11,
+      runtime: Runtime.JAVA_21,
       timeout: Duration.seconds(30),
       memorySize: 2048,
       code: backendCodeAsset,
@@ -73,7 +73,7 @@ export class ApiGatewayBackendConstruct extends Construct {
 
     const startStopInstancesLambda = new LambdaFunction(this, "StartStopInstances", {
       handler: "org.itsallcode.aws.ec2.StreamLambdaHandler",
-      runtime: Runtime.JAVA_11,
+      runtime: Runtime.JAVA_21,
       timeout: Duration.seconds(30),
       memorySize: 2048,
       code: backendCodeAsset,
