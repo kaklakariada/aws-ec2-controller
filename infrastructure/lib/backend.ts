@@ -2,7 +2,7 @@ import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
 import { AuthorizationType, EndpointType, LambdaIntegration, LambdaIntegrationOptions, MethodLoggingLevel, MockIntegration, PassthroughBehavior, Resource, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
-import { CfnFunction, Code, Function as LambdaFunction, Runtime } from "aws-cdk-lib/aws-lambda";
+import { Architecture, Code, Function as LambdaFunction, Runtime, SnapStartConf } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 
 interface BackendProps {
@@ -53,30 +53,35 @@ export class ApiGatewayBackendConstruct extends Construct {
     });
 
     const backendCodeAsset = Code.fromAsset("../backend/build/distributions/backend.zip");
-    const listInstancesLambda = new LambdaFunction(this, "ListInstances", {
-      handler: "org.itsallcode.aws.ec2.StreamLambdaHandler",
+
+    const commonLambdaConfig = {
+      handler: "io.micronaut.function.aws.proxy.payload1.ApiGatewayProxyRequestEventFunction",
+      architecture: Architecture.X86_64,
+      snapStart: SnapStartConf.ON_PUBLISHED_VERSIONS,
       runtime: Runtime.JAVA_21,
       timeout: Duration.seconds(30),
       memorySize: 2048,
       code: backendCodeAsset,
+    }
+
+    const listInstancesLambda = new LambdaFunction(this, "ListInstances", {
+      ...commonLambdaConfig,
       environment: {
         MICRONAUT_ENVIRONMENTS: "lambda",
         MICRONAUT_SERVER_CORS_CONFIGURATIONS_ALLPROD_ALLOWEDORIGINS: props.domain,
         TABLENAME_DYNAMODBINSTANCE: instancesTable.tableName,
         HOSTED_ZONE_ID: props.hostedZoneId
       },
-      initialPolicy: [new PolicyStatement({ actions: ["ec2:DescribeInstances"], resources: ["*"] }),
-      new PolicyStatement({ actions: ["route53:ListResourceRecordSets"], resources: [`arn:aws:route53:::hostedzone/${props.hostedZoneId}`] }),
-      new PolicyStatement({ actions: ["dynamodb:Scan"], resources: [instancesTable.tableArn] }),
-      new PolicyStatement({ actions: ["pricing:GetProducts"], resources: ["*"] })]
+      initialPolicy: [
+        new PolicyStatement({ actions: ["ec2:DescribeInstances"], resources: ["*"] }),
+        new PolicyStatement({ actions: ["route53:ListResourceRecordSets"], resources: [`arn:aws:route53:::hostedzone/${props.hostedZoneId}`] }),
+        new PolicyStatement({ actions: ["dynamodb:Scan"], resources: [instancesTable.tableArn] }),
+        new PolicyStatement({ actions: ["pricing:GetProducts"], resources: ["*"] })
+      ]
     });
 
     const startStopInstancesLambda = new LambdaFunction(this, "StartStopInstances", {
-      handler: "org.itsallcode.aws.ec2.StreamLambdaHandler",
-      runtime: Runtime.JAVA_21,
-      timeout: Duration.seconds(30),
-      memorySize: 2048,
-      code: backendCodeAsset,
+      ...commonLambdaConfig,
       environment: {
         MICRONAUT_ENVIRONMENTS: "lambda",
         MICRONAUT_SERVER_CORS_CONFIGURATIONS_ALLPROD_ALLOWEDORIGINS: props.domain,
@@ -91,8 +96,6 @@ export class ApiGatewayBackendConstruct extends Construct {
     const listInstancesLambdaAlias = listInstancesLambda.addAlias("prod");
     const startStopInstancesLambdaAlias = startStopInstancesLambda.addAlias("prod");
 
-    enableSnapStart(listInstancesLambda);
-    enableSnapStart(startStopInstancesLambda);
 
     const api = new RestApi(this, "RestApi", {
       restApiName: "EC2 Controller",
@@ -153,10 +156,4 @@ export class ApiGatewayBackendConstruct extends Construct {
       value: instancesTable.tableName
     });
   }
-}
-
-function enableSnapStart(lambda: LambdaFunction) {
-  (lambda.node.defaultChild as CfnFunction).addPropertyOverride('SnapStart', {
-    ApplyOn: 'PublishedVersions',
-  });
 }

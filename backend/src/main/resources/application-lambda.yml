@@ -4,6 +4,7 @@ micronaut:
             enabled: true
             configurations:
                 all-prod:
+                    allowed-origins: https://ec2.chp1.net
                     allowedMethods:
                         - GET
                         - POST
