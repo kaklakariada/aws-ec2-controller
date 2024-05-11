@@ -12,10 +12,10 @@ EC2 controller uses the following technologies:
 * Authentication and Authorization: Cognito
 * Static web content: Cloudfront and S3
 * Frontend: React and AWS Amplify
-* Backend: API-Gateway and Lambda
+* Backend: API-Gateway (REST API) and Lambda
 * Storage: DynamoDb
-* Deployment: Cloudformation / CDK
-* Backend framework: Java 11 and Micronaut
+* Deployment: CloudFormation / CDK
+* Backend framework: Java 21 and Micronaut with SnapStart
 
 ![Architecture](arch/architecture.png "Architecture")
 
@@ -32,14 +32,14 @@ To deploy this in your AWS account you will need the following:
 
 On your local machine you will need the following:
 
-* [Node.js](https://nodejs.org/en/) 16.x
-* Java Development Kit (JDK) 11 (e.g. from [Adoptium](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot))
+* [Node.js](https://nodejs.org/en/) 22
+* Java Development Kit (JDK) 21 (e.g. from [Adoptium](https://adoptium.net/?variant=openjdk21&jvmVariant=hotspot))
 * [AWS Command line interface](https://aws.amazon.com/cli/)
   * Configure AWS credentials for the AWS CLI by calling `aws configure`
 
 ### Build backend
 
-```bash
+```sh
 cd backend
 ./gradlew clean build
 ```
@@ -68,7 +68,7 @@ export const CONFIG: InfrastructureConfig = {
 
 ### Deploy infrastructure and backend
 
-```bash
+```sh
 cd infrastructure
 npm run cdk deploy
 ```
@@ -102,7 +102,7 @@ exports.CONFIG = {
 
 ### Deploy frontend
 
-```bash
+```sh
 cd frontend
 npm run deploy
 ```
@@ -146,20 +146,20 @@ HOSTED_ZONE_ID = XXXXXXXXXXXXXX
 
 Then start the local server:
 
-```bash
+```sh
 cd backend
 ./gradlew runServer
 ```
 
 #### Check for dependency updates
 
-```bash
+```sh
 ./gradlew dependencyUpdates
 ```
 
 #### Configure eclipse project
 
-```bash
+```sh
 cd backend
 ./gradlew eclipse
 ```
@@ -168,14 +168,14 @@ cd backend
 
 Run local frontend during development:
 
-```bash
+```sh
 cd frontend
 npm start
 ```
 
 ### Upgrade dependencies in `package.json`
 
-```bash
+```sh
 npx npm-check-updates -u && npm install
 ```
 
@@ -185,7 +185,7 @@ This project requires some configuration files with deployment specific informat
 
 When switching from `private-main` to the public `main` branch, git will delete the configuration files. To restore them you can use the following command:
 
-```bash
+```sh
 git show private-main:frontend/deploy/deploy-config.js > frontend/deploy/deploy-config.js \
   && git show private-main:frontend/src/frontend-config.ts > frontend/src/frontend-config.ts \
   && git show private-main:backend/local-server-env.properties > backend/local-server-env.properties \
@@ -210,7 +210,7 @@ Add an entry for your instance to the DynamoDB table and set `controlAllowed` to
 
 Configure project using gradle and refresh project in Eclipse:
 
-```bash
+```sh
 cd backend && ./gradlew eclipse
 ```
 
@@ -218,7 +218,7 @@ cd backend && ./gradlew eclipse
 
 Configure project using gradle and refresh project in Eclipse:
 
-```bash
+```sh
 cd backend && ./gradlew eclipse
 ```
 
