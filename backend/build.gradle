@@ -121,9 +121,9 @@ jacocoTestReport {
     }
 }
 
-rootProject.tasks["sonarqube"].dependsOn(tasks["jacocoTestReport"])
+rootProject.tasks["sonar"].dependsOn(tasks["jacocoTestReport"])
 
-sonarqube {
+sonar {
     properties {
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.organization", "kaklakariada-github"
