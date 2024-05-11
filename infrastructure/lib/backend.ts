@@ -1,8 +1,9 @@
 import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
-import { AuthorizationType, EndpointType, LambdaIntegration, LambdaIntegrationOptions, MethodLoggingLevel, MockIntegration, PassthroughBehavior, Resource, RestApi } from "aws-cdk-lib/aws-apigateway";
+import { AccessLogFormat, AuthorizationType, EndpointType, LambdaIntegration, LambdaIntegrationOptions, LogGroupLogDestination, MethodLoggingLevel, MockIntegration, PassthroughBehavior, Resource, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
-import { Architecture, Code, Function as LambdaFunction, Runtime, SnapStartConf } from "aws-cdk-lib/aws-lambda";
+import { Architecture, Code, Function as LambdaFunction, LoggingFormat, Runtime, SnapStartConf } from "aws-cdk-lib/aws-lambda";
+import { LogGroup, LogGroupClass, LogGroupProps, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Construct } from "constructs";
 
 interface BackendProps {
@@ -62,13 +63,24 @@ export class ApiGatewayBackendConstruct extends Construct {
       timeout: Duration.seconds(30),
       memorySize: 2048,
       code: backendCodeAsset,
+      loggingFormat: LoggingFormat.TEXT,
+      currentVersionOptions: {
+        removalPolicy: RemovalPolicy.DESTROY,
+      },
+    }
+
+    const logGroupProps: LogGroupProps = {
+      retention: RetentionDays.ONE_MONTH,
+      logGroupClass: LogGroupClass.STANDARD,
+      removalPolicy: RemovalPolicy.DESTROY,
     }
 
     const listInstancesLambda = new LambdaFunction(this, "ListInstances", {
       ...commonLambdaConfig,
+      logGroup: new LogGroup(this, "ListInstancesLambdaLogGroup", logGroupProps),
       environment: {
         MICRONAUT_ENVIRONMENTS: "lambda",
-        MICRONAUT_SERVER_CORS_CONFIGURATIONS_ALLPROD_ALLOWEDORIGINS: props.domain,
+        MICRONAUT_SERVER_CORS_CONFIGURATIONS_WEB_ALLOWEDORIGINS: props.domain,
         TABLENAME_DYNAMODBINSTANCE: instancesTable.tableName,
         HOSTED_ZONE_ID: props.hostedZoneId
       },
@@ -82,9 +94,10 @@ export class ApiGatewayBackendConstruct extends Construct {
 
     const startStopInstancesLambda = new LambdaFunction(this, "StartStopInstances", {
       ...commonLambdaConfig,
+      logGroup: new LogGroup(this, "StarStopInstancesLambdaLogGroup", logGroupProps),
       environment: {
         MICRONAUT_ENVIRONMENTS: "lambda",
-        MICRONAUT_SERVER_CORS_CONFIGURATIONS_ALLPROD_ALLOWEDORIGINS: props.domain,
+        MICRONAUT_SERVER_CORS_CONFIGURATIONS_WEB_ALLOWEDORIGINS: props.domain,
         TABLENAME_DYNAMODBINSTANCE: instancesTable.tableName
       },
       initialPolicy: [
@@ -96,27 +109,26 @@ export class ApiGatewayBackendConstruct extends Construct {
     const listInstancesLambdaAlias = listInstancesLambda.addAlias("prod");
     const startStopInstancesLambdaAlias = startStopInstancesLambda.addAlias("prod");
 
-
     const api = new RestApi(this, "RestApi", {
       restApiName: "EC2 Controller",
       description: "Backend for EC2 Controller",
+      endpointTypes: [EndpointType.REGIONAL],
+      failOnWarnings: true,
+      retainDeployments: false,
       defaultMethodOptions: {
         authorizationType: AuthorizationType.IAM,
       },
-      endpointTypes: [EndpointType.REGIONAL],
-      failOnWarnings: true,
       deployOptions: {
         stageName: "prod",
         tracingEnabled: false,
-        methodOptions: {
-          "/*/*": {
-            metricsEnabled: false,
-            loggingLevel: MethodLoggingLevel.INFO,
-            dataTraceEnabled: false,
-            throttlingBurstLimit: 5,
-            throttlingRateLimit: 10
-          }
-        }
+        loggingLevel: MethodLoggingLevel.INFO,
+        accessLogFormat: AccessLogFormat.clf(),
+        accessLogDestination: new LogGroupLogDestination(new LogGroup(this, "RestApiLogGroup", logGroupProps)),
+        cachingEnabled: false,
+        metricsEnabled: false,
+        dataTraceEnabled: false,
+        throttlingBurstLimit: 5, // requests (default: 5000)
+        throttlingRateLimit: 5, // requests per second (default: 10000)
       }
     });
 
@@ -157,3 +169,5 @@ export class ApiGatewayBackendConstruct extends Construct {
     });
   }
 }
+
+
