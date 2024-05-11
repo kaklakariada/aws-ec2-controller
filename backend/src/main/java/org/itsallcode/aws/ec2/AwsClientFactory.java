@@ -42,8 +42,9 @@ public class AwsClientFactory
     private String getEnvValue(final String name)
     {
         return env.get(name, String.class).orElseThrow(
-                () -> new IllegalArgumentException("Region not found in environment using property '" + name + "'"));
+                () -> new IllegalArgumentException("Environment value '" + name + "' not found"));
     }
+
     @Singleton
     public AmazonEC2 ec2Client()
     {
