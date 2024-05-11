@@ -12,5 +12,9 @@
         "**/.settings": true,
         "**/.factorypath": true
     },
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "sonarlint.connectedMode.project": {
+        "connectionId": "kaklakariada-github",
+        "projectKey": "aws-ec2-controller-backend"
+    }
 }
