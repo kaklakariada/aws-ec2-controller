@@ -1,4 +1,6 @@
 {
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
     "files.exclude": {
         "**/.classpath": true,
         "**/.project": true,
