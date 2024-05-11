@@ -52,8 +52,7 @@ jobs:
       if: ${{ env.SONAR_TOKEN != null }}
       run: |
         cd backend
-        ./gradlew sonarqube -Dsonar.token=$SONAR_TOKEN \
-                            --info --warning-mode=summary
+        ./gradlew sonar -Dsonar.token=$SONAR_TOKEN --info --warning-mode=summary
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
