@@ -1,5 +1,5 @@
 import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
-import { AccessLogFormat, AuthorizationType, EndpointType, LambdaIntegration, LambdaIntegrationOptions, LogGroupLogDestination, MethodLoggingLevel, MockIntegration, PassthroughBehavior, Resource, RestApi } from "aws-cdk-lib/aws-apigateway";
+import { AccessLogFormat, AuthorizationType, ConnectionType, CorsOptions, EndpointType, LambdaIntegration, LambdaIntegrationOptions, LogGroupLogDestination, MethodLoggingLevel, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
 import { Architecture, Code, Function as LambdaFunction, LoggingFormat, Runtime, SnapStartConf } from "aws-cdk-lib/aws-lambda";
@@ -11,35 +11,6 @@ interface BackendProps {
   domain: string;
   hostedZoneId: string;
   userRole: Role;
-}
-
-function addCorsOptions(apiResource: Resource, allowOriginDomain: string, allowMethod: string) {
-  apiResource.addMethod("OPTIONS", new MockIntegration({
-    integrationResponses: [{
-      statusCode: "200",
-      responseParameters: {
-        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-        "method.response.header.Access-Control-Allow-Origin": `'https://${allowOriginDomain}'`,
-        "method.response.header.Access-Control-Allow-Credentials": "'true'",
-        "method.response.header.Access-Control-Allow-Methods": `'${allowMethod}'`,
-      }
-    }],
-    passthroughBehavior: PassthroughBehavior.WHEN_NO_MATCH,
-    requestTemplates: {
-      "application/json": "{\"statusCode\": 200}"
-    }
-  }), {
-    authorizationType: AuthorizationType.NONE,
-    methodResponses: [{
-      statusCode: "200",
-      responseParameters: {
-        "method.response.header.Access-Control-Allow-Headers": true,
-        "method.response.header.Access-Control-Allow-Methods": true,
-        "method.response.header.Access-Control-Allow-Credentials": true, // COGNITO
-        "method.response.header.Access-Control-Allow-Origin": true,
-      }
-    }]
-  });
 }
 
 export class ApiGatewayBackendConstruct extends Construct {
@@ -109,6 +80,7 @@ export class ApiGatewayBackendConstruct extends Construct {
     const listInstancesLambdaAlias = listInstancesLambda.addAlias("prod");
     const startStopInstancesLambdaAlias = startStopInstancesLambda.addAlias("prod");
 
+    const corsAllowedOrigin = `https://${props.domain}`;
     const api = new RestApi(this, "RestApi", {
       restApiName: "EC2 Controller",
       description: "Backend for EC2 Controller",
@@ -140,17 +112,30 @@ export class ApiGatewayBackendConstruct extends Construct {
 
     const options: LambdaIntegrationOptions = {
       proxy: true,
-      allowTestInvoke: true
+      allowTestInvoke: true,
+      connectionType: ConnectionType.INTERNET,
     };
+
+    function corsOptions(method: string): CorsOptions {
+      return {
+        statusCode: 204,
+        allowOrigins: [corsAllowedOrigin],
+        allowMethods: [method],
+        allowCredentials: false,
+        allowHeaders: ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"],
+        maxAge: Duration.minutes(30),
+      };
+    }
+
+    instancesResource.addCorsPreflight(corsOptions("GET"));
     const getInstancesMethod = instancesResource.addMethod("GET",
       new LambdaIntegration(listInstancesLambdaAlias, options),
       { operationName: "ListInstances" });
+
+    instanceStateResource.addCorsPreflight(corsOptions("PUT"));
     const putInstanceStateMethod = instanceStateResource.addMethod("PUT",
       new LambdaIntegration(startStopInstancesLambdaAlias, options),
       { operationName: "StartStopInstance" });
-
-    addCorsOptions(instancesResource, props.domain, "GET");
-    addCorsOptions(instanceStateResource, props.domain, "PUT");
 
     props.userRole.addToPolicy(new PolicyStatement({
       actions: ["execute-api:Invoke"], resources: [
