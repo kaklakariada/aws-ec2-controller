@@ -19,7 +19,7 @@ const InstanceList: React.FC = () => {
     }
     useEffect(() => {
         fetchData();
-    }, []);
+    });
     return (
         <Container>
             {instance.error ? <div css={css`margin: 2em`} >{`Error: ${instance.error}`}</div> :

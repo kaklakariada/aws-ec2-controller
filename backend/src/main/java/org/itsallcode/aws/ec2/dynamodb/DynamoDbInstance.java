@@ -3,6 +3,7 @@ package org.itsallcode.aws.ec2.dynamodb;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 
+
 public class DynamoDbInstance
 {
     private String id;
@@ -34,22 +35,22 @@ public class DynamoDbInstance
         return sortOrder;
     }
 
-    public void setId(String id)
+    public void setId(final String id)
     {
         this.id = id;
     }
 
-    public void setDomain(String domain)
+    public void setDomain(final String domain)
     {
         this.domain = domain;
     }
 
-    public void setControlAllowed(boolean controlAllowed)
+    public void setControlAllowed(final boolean controlAllowed)
     {
         this.controlAllowed = controlAllowed;
     }
 
-    public void setSortOrder(int sortOrder)
+    public void setSortOrder(final int sortOrder)
     {
         this.sortOrder = sortOrder;
     }

@@ -1,10 +1,11 @@
-import { StaticContentConstruct } from "./static-content";
-import { ApiGatewayBackendConstruct } from "./backend";
-import { CognitoAuthConstruct } from "./cognito";
 import { Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
+import { ApiGatewayBackendConstruct } from "./backend";
+import { CognitoAuthConstruct } from "./cognito";
+import { StaticContentConstruct } from "./static-content";
 
 export interface InfrastructureStackProps extends StackProps {
+  region: string;
   domain: string;
   hostedZoneName: string;
   hostedZoneId: string;
@@ -28,6 +29,7 @@ export class InfrastructureStack extends Stack {
     });
 
     new ApiGatewayBackendConstruct(this, "Backend", {
+      region: props.region,
       domain: props.domain,
       cognitoUserpoolArn: auth.userPoolArn,
       userRole: auth.userRole,

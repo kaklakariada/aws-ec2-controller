@@ -1,7 +1,5 @@
 package org.itsallcode.aws.ec2.service;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.List;
 
 import org.itsallcode.aws.ec2.model.DnsEntry;
@@ -35,8 +33,8 @@ public class Route53Client
         }
         final List<ResourceRecordSet> resourceRecordSets = result.getResourceRecordSets();
         return resourceRecordSets.stream() //
-                .filter(record -> record.getType().equals("A")) //
+                .filter(dnsRecord -> dnsRecord.getType().equals("A")) //
                 .map(DnsEntry::new) //
-                .collect(toList());
+                .toList();
     }
 }

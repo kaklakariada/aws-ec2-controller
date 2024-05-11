@@ -1,53 +1,75 @@
-import { Auth } from "aws-amplify";
-import { CognitoUserSession } from "amazon-cognito-identity-js";
+import { fetchAuthSession, AuthSession, signOut, getCurrentUser, AuthUser } from "aws-amplify/auth";
 
-interface EssentialCredentials {
-    accessKeyId: string;
-    sessionToken: string;
-    secretAccessKey: string;
-    identityId: string;
-    authenticated: boolean;
-}
-
-interface UserAttributes {
-    name: string;
-    given_name: string;
-    family_name: string;
-}
-
-interface AuthData {
-    id: string;
-    name?: string;
-    username: string;
-    attributes: UserAttributes;
-    signInUserSession: CognitoUserSession;
-}
+import { AWSCredentials } from "@aws-amplify/core/internals/utils";
 
 export class AuthService {
 
-    currentAuthenticatedUser(): Promise<AuthData> {
-        return Auth.currentAuthenticatedUser();
+    async _getIdToken(): Promise<string> {
+        const credentails = await this.getAuthSession()
+        const token = credentails.tokens?.idToken?.toString()
+        if (!token) {
+            throw new Error(`No session found for user`);
+        }
+        return token
     }
 
-    getCredentials(): Promise<EssentialCredentials> {
-        return Auth.currentUserCredentials()
-            .then((cred) => {
-                const essentialCredentials = Auth.essentialCredentials(cred);
-                console.debug("Got credentials", cred, essentialCredentials);
-                return essentialCredentials;
-            })
-            .catch((err) => {
-                console.error("Error getting credentials", err);
-                throw new Error(err);
-            });
+    async currentAuthenticatedUser(): Promise<AuthUser> {
+        return await getCurrentUser();
     }
 
-    async getIdToken(): Promise<string> {
-        const cred = await this.currentAuthenticatedUser();
-        return cred.signInUserSession.getIdToken().getJwtToken();
+    async getAuthSession(): Promise<AuthSession> {
+        return await fetchAuthSession();
     }
 
-    signOut(): void {
-        Auth.signOut();
+    private async getCredentials(): Promise<AWSCredentials> {
+        const session = await this.getAuthSession()
+        if (!session.credentials) {
+            throw new Error(`Auth session does not contain credentials`);
+        }
+        return session.credentials
+    }
+    async getRenewableCredentials(): Promise<RenewableCredentials> {
+        return new RenewableCredentials(this.getCredentials, await this.getCredentials());
+    }
+
+
+    signOut() {
+        signOut({ global: true });
+    }
+}
+
+type CredentialsConsumer = (credentials: RenewableCredentials) => void;
+type CredentialsProvider = () => Promise<AWSCredentials>;
+
+
+const CREDENTIAL_RENEWAL_BUFFER_MILLIS = 1000*10;
+
+export class RenewableCredentials {
+    constructor(private fetchCredentials: CredentialsProvider, private awsCredentials: AWSCredentials) {
+        const remainingTimeMinutes = (this.expiration.getTime() - Date.now()) / 1000 / 60;
+        console.log(`Credentials expire at ${this.expiration} in ${remainingTimeMinutes} minutes`)
+    }
+    whenExpired(consumer: CredentialsConsumer) {
+        const expirationMillis = this.expiration.getTime() - Date.now()- CREDENTIAL_RENEWAL_BUFFER_MILLIS;
+        console.log(`Renewing credentials in ${expirationMillis / 1000/60} minutes`);
+        setTimeout(async () => {
+            const newCredentials = await this.fetchCredentials();
+            consumer(new RenewableCredentials(this.fetchCredentials, newCredentials));
+        }, expirationMillis);
+    }
+
+    get expiration(): Date {
+        if (!this.awsCredentials.expiration) {
+            throw new Error(`Credentials do not have an expiration date`);
+        }
+        return this.awsCredentials.expiration;
+    }
+
+    get remainingValidTimeMillis(): number {
+        return this.expiration.getTime() - Date.now();
+    }
+
+    get credentials(): AWSCredentials {
+        return this.awsCredentials;
     }
 }

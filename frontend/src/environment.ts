@@ -1,6 +1,5 @@
-import { ENDPOINT_NAME } from "./services/BackendEndpoints";
 import { CONFIG } from "./frontend-config";
-
+import { ResourcesConfig } from "aws-amplify";
 export interface FrontendConfig {
     region: string;
     cognitoIdentityPoolId: string;
@@ -9,30 +8,9 @@ export interface FrontendConfig {
     apiGatewayEndpointUrl: string;
 }
 
-interface ApiEndpoint {
-    name: string;
-    endpoint: string;
-    region: string;
-}
-
-interface AmplifyConfig {
-    Auth: {
-        identityPoolId: string;
-        identityPoolRegion: string;
-        region: string;
-        userPoolId: string;
-        userPoolWebClientId: string;
-        mandatorySignIn: boolean;
-        authenticationFlowType: string;
-    };
-    API: {
-        endpoints: ApiEndpoint[]
-    };
-}
-
 interface EnvironmentConfig {
     region: string;
-    amplifyConfig: AmplifyConfig;
+    amplifyConfig: ResourcesConfig;
 }
 
 const isLocalDevEnvironment = window.location.hostname === "localhost";
@@ -43,22 +21,21 @@ const environment: EnvironmentConfig = {
     region: config.region,
     amplifyConfig: {
         Auth: {
-            identityPoolId: config.cognitoIdentityPoolId,
-            identityPoolRegion: config.region,
-            region: config.region,
-            userPoolId: config.cognitoUserPoolId,
-            userPoolWebClientId: config.cognitoUserPoolWebClientId,
-            mandatorySignIn: true,
-            authenticationFlowType: "USER_SRP_AUTH"
+            Cognito: {
+                userPoolId: config.cognitoUserPoolId,
+                userPoolClientId: config.cognitoUserPoolWebClientId,
+                identityPoolId: config.cognitoIdentityPoolId,
+                allowGuestAccess: false,
+            },
         },
         API: {
-            endpoints: [
-                {
-                    name: ENDPOINT_NAME,
+            REST: {
+                Ec2ControllerEndpoint: {
                     endpoint: isLocalDevEnvironment ? "http://localhost:8080" : config.apiGatewayEndpointUrl,
                     region: config.region
+
                 }
-            ]
+            }
         }
     }
 };

@@ -1,44 +1,17 @@
 import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
-import { AuthorizationType, EndpointType, LambdaIntegration, LambdaIntegrationOptions, MethodLoggingLevel, MockIntegration, PassthroughBehavior, Resource, RestApi } from "aws-cdk-lib/aws-apigateway";
+import { AccessLogFormat, AuthorizationType, ConnectionType, CorsOptions, EndpointType, LambdaIntegration, LambdaIntegrationOptions, LogGroupLogDestination, MethodLoggingLevel, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
-import { CfnFunction, Code, Function as LambdaFunction, Runtime } from "aws-cdk-lib/aws-lambda";
+import { Architecture, Code, Function as LambdaFunction, LoggingFormat, Runtime, SnapStartConf } from "aws-cdk-lib/aws-lambda";
+import { LogGroup, LogGroupClass, LogGroupProps, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Construct } from "constructs";
 
 interface BackendProps {
+  region: string;
   cognitoUserpoolArn: string;
   domain: string;
   hostedZoneId: string;
   userRole: Role;
-}
-
-function addCorsOptions(apiResource: Resource, allowOriginDomain: string, allowMethod: string) {
-  apiResource.addMethod("OPTIONS", new MockIntegration({
-    integrationResponses: [{
-      statusCode: "200",
-      responseParameters: {
-        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-        "method.response.header.Access-Control-Allow-Origin": `'https://${allowOriginDomain}'`,
-        "method.response.header.Access-Control-Allow-Credentials": "'true'",
-        "method.response.header.Access-Control-Allow-Methods": `'${allowMethod}'`,
-      }
-    }],
-    passthroughBehavior: PassthroughBehavior.WHEN_NO_MATCH,
-    requestTemplates: {
-      "application/json": "{\"statusCode\": 200}"
-    }
-  }), {
-    authorizationType: AuthorizationType.NONE,
-    methodResponses: [{
-      statusCode: "200",
-      responseParameters: {
-        "method.response.header.Access-Control-Allow-Headers": true,
-        "method.response.header.Access-Control-Allow-Methods": true,
-        "method.response.header.Access-Control-Allow-Credentials": true, // COGNITO
-        "method.response.header.Access-Control-Allow-Origin": true,
-      }
-    }]
-  });
 }
 
 export class ApiGatewayBackendConstruct extends Construct {
@@ -53,33 +26,54 @@ export class ApiGatewayBackendConstruct extends Construct {
     });
 
     const backendCodeAsset = Code.fromAsset("../backend/build/distributions/backend.zip");
-    const listInstancesLambda = new LambdaFunction(this, "ListInstances", {
-      handler: "org.itsallcode.aws.ec2.StreamLambdaHandler",
-      runtime: Runtime.JAVA_11,
+
+    const commonLambdaConfig = {
+      handler: "io.micronaut.function.aws.proxy.payload1.ApiGatewayProxyRequestEventFunction",
+      architecture: Architecture.X86_64,
+      snapStart: SnapStartConf.ON_PUBLISHED_VERSIONS,
+      runtime: Runtime.JAVA_21,
       timeout: Duration.seconds(30),
       memorySize: 2048,
       code: backendCodeAsset,
+      loggingFormat: LoggingFormat.TEXT,
+      currentVersionOptions: {
+        removalPolicy: RemovalPolicy.DESTROY,
+      },
+    }
+
+    const logGroupProps: LogGroupProps = {
+      retention: RetentionDays.ONE_MONTH,
+      logGroupClass: LogGroupClass.STANDARD,
+      removalPolicy: RemovalPolicy.DESTROY,
+    }
+
+    const defaultLambdaEnv = {
+      MICRONAUT_ENVIRONMENTS: "lambda",
+      MICRONAUT_SERVER_CORS_CONFIGURATIONS_WEB_ALLOWEDORIGINS: props.domain,
+      DEPLOYMENT_AWS_REGION: props.region,
+    };
+
+    const listInstancesLambda = new LambdaFunction(this, "ListInstances", {
+      ...commonLambdaConfig,
+      logGroup: new LogGroup(this, "ListInstancesLambdaLogGroup", logGroupProps),
       environment: {
-        MICRONAUT_ENVIRONMENTS: "lambda",
-        MICRONAUT_SERVER_CORS_CONFIGURATIONS_ALLPROD_ALLOWEDORIGINS: props.domain,
+        ...defaultLambdaEnv,
         TABLENAME_DYNAMODBINSTANCE: instancesTable.tableName,
         HOSTED_ZONE_ID: props.hostedZoneId
       },
-      initialPolicy: [new PolicyStatement({ actions: ["ec2:DescribeInstances"], resources: ["*"] }),
-      new PolicyStatement({ actions: ["route53:ListResourceRecordSets"], resources: [`arn:aws:route53:::hostedzone/${props.hostedZoneId}`] }),
-      new PolicyStatement({ actions: ["dynamodb:Scan"], resources: [instancesTable.tableArn] }),
-      new PolicyStatement({ actions: ["pricing:GetProducts"], resources: ["*"] })]
+      initialPolicy: [
+        new PolicyStatement({ actions: ["ec2:DescribeInstances"], resources: ["*"] }),
+        new PolicyStatement({ actions: ["route53:ListResourceRecordSets"], resources: [`arn:aws:route53:::hostedzone/${props.hostedZoneId}`] }),
+        new PolicyStatement({ actions: ["dynamodb:Scan"], resources: [instancesTable.tableArn] }),
+        new PolicyStatement({ actions: ["pricing:GetProducts"], resources: ["*"] })
+      ]
     });
 
     const startStopInstancesLambda = new LambdaFunction(this, "StartStopInstances", {
-      handler: "org.itsallcode.aws.ec2.StreamLambdaHandler",
-      runtime: Runtime.JAVA_11,
-      timeout: Duration.seconds(30),
-      memorySize: 2048,
-      code: backendCodeAsset,
+      ...commonLambdaConfig,
+      logGroup: new LogGroup(this, "StarStopInstancesLambdaLogGroup", logGroupProps),
       environment: {
-        MICRONAUT_ENVIRONMENTS: "lambda",
-        MICRONAUT_SERVER_CORS_CONFIGURATIONS_ALLPROD_ALLOWEDORIGINS: props.domain,
+        ...defaultLambdaEnv,
         TABLENAME_DYNAMODBINSTANCE: instancesTable.tableName
       },
       initialPolicy: [
@@ -91,29 +85,27 @@ export class ApiGatewayBackendConstruct extends Construct {
     const listInstancesLambdaAlias = listInstancesLambda.addAlias("prod");
     const startStopInstancesLambdaAlias = startStopInstancesLambda.addAlias("prod");
 
-    enableSnapStart(listInstancesLambda);
-    enableSnapStart(startStopInstancesLambda);
-
+    const corsAllowedOrigin = `https://${props.domain}`;
     const api = new RestApi(this, "RestApi", {
       restApiName: "EC2 Controller",
       description: "Backend for EC2 Controller",
+      endpointTypes: [EndpointType.REGIONAL],
+      failOnWarnings: true,
+      retainDeployments: false,
       defaultMethodOptions: {
         authorizationType: AuthorizationType.IAM,
       },
-      endpointTypes: [EndpointType.REGIONAL],
-      failOnWarnings: true,
       deployOptions: {
         stageName: "prod",
         tracingEnabled: false,
-        methodOptions: {
-          "/*/*": {
-            metricsEnabled: false,
-            loggingLevel: MethodLoggingLevel.INFO,
-            dataTraceEnabled: false,
-            throttlingBurstLimit: 5,
-            throttlingRateLimit: 10
-          }
-        }
+        loggingLevel: MethodLoggingLevel.INFO,
+        accessLogFormat: AccessLogFormat.clf(),
+        accessLogDestination: new LogGroupLogDestination(new LogGroup(this, "RestApiLogGroup", logGroupProps)),
+        cachingEnabled: false,
+        metricsEnabled: false,
+        dataTraceEnabled: false,
+        throttlingBurstLimit: 5, // requests (default: 5000)
+        throttlingRateLimit: 5, // requests per second (default: 10000)
       }
     });
 
@@ -125,17 +117,30 @@ export class ApiGatewayBackendConstruct extends Construct {
 
     const options: LambdaIntegrationOptions = {
       proxy: true,
-      allowTestInvoke: true
+      allowTestInvoke: true,
+      connectionType: ConnectionType.INTERNET,
     };
+
+    function corsOptions(method: string): CorsOptions {
+      return {
+        statusCode: 204,
+        allowOrigins: [corsAllowedOrigin],
+        allowMethods: [method],
+        allowCredentials: false,
+        allowHeaders: ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"],
+        maxAge: Duration.minutes(30),
+      };
+    }
+
+    instancesResource.addCorsPreflight(corsOptions("GET"));
     const getInstancesMethod = instancesResource.addMethod("GET",
       new LambdaIntegration(listInstancesLambdaAlias, options),
       { operationName: "ListInstances" });
+
+    instanceStateResource.addCorsPreflight(corsOptions("PUT"));
     const putInstanceStateMethod = instanceStateResource.addMethod("PUT",
       new LambdaIntegration(startStopInstancesLambdaAlias, options),
       { operationName: "StartStopInstance" });
-
-    addCorsOptions(instancesResource, props.domain, "GET");
-    addCorsOptions(instanceStateResource, props.domain, "PUT");
 
     props.userRole.addToPolicy(new PolicyStatement({
       actions: ["execute-api:Invoke"], resources: [
@@ -155,8 +160,4 @@ export class ApiGatewayBackendConstruct extends Construct {
   }
 }
 
-function enableSnapStart(lambda: LambdaFunction) {
-  (lambda.node.defaultChild as CfnFunction).addPropertyOverride('SnapStart', {
-    ApplyOn: 'PublishedVersions',
-  });
-}
+

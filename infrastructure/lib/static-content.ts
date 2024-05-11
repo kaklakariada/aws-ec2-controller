@@ -41,13 +41,13 @@ export class StaticContentConstruct extends Construct {
       defaultRootObject: "index.html",
       enableIpV6: true,
       viewerCertificate: ViewerCertificate.fromAcmCertificate(certificate, {
-        securityPolicy: SecurityPolicyProtocol.TLS_V1_2_2018,
+        securityPolicy: SecurityPolicyProtocol.TLS_V1_2_2021,
         sslMethod: SSLMethod.SNI,
         aliases: [props.domain]
       }),
       priceClass: PriceClass.PRICE_CLASS_100,
       viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      httpVersion: HttpVersion.HTTP2,
+      httpVersion: HttpVersion.HTTP2_AND_3,
     });
 
     const bucketPolicy = new BucketPolicy(this, "AllowReadAccessToCloudFront", { bucket: staticContentBucket });

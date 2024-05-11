@@ -1,0 +1,17 @@
+{
+    "micronaut": {
+        "server": {
+            "cors": {
+                "enabled": true,
+                "configurations": {
+                    "web": {
+                        "allowed-methods": ["GET", "POST", "PUT"],
+                        "allowed-headers": ["Authorization"],
+                        "allow-credentials": true,
+                        "max-age": 1800
+                    }
+                }
+            }
+        }
+    }
+}
