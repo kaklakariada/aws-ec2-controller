@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { AmplifyUser } from '@aws-amplify/ui';
+import { AuthUser } from 'aws-amplify/auth';
 import { css } from '@emotion/react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from "@mui/icons-material/Menu";
@@ -19,7 +19,7 @@ const backendService = new BackendService();
 
 interface AppBarProps {
   signOut: SignOut;
-  user: AmplifyUser | undefined;
+  user: AuthUser | undefined;
 }
 
 const AppBar: React.FC<AppBarProps> = ({ user, signOut }) => {
@@ -83,7 +83,7 @@ const AppBar: React.FC<AppBarProps> = ({ user, signOut }) => {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem disabled>{user ? "Signed in as ${user.getUsername()}" : "not signed in"}</MenuItem>
+              <MenuItem disabled>{user ? `Signed in as ${user.username}` : "not signed in"}</MenuItem>
               <MenuItem onClick={signOut}>Logout</MenuItem>
             </Menu>
           </div>
