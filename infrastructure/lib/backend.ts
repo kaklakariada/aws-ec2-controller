@@ -7,6 +7,7 @@ import { LogGroup, LogGroupClass, LogGroupProps, RetentionDays } from "aws-cdk-l
 import { Construct } from "constructs";
 
 interface BackendProps {
+  region: string;
   cognitoUserpoolArn: string;
   domain: string;
   hostedZoneId: string;
@@ -46,12 +47,17 @@ export class ApiGatewayBackendConstruct extends Construct {
       removalPolicy: RemovalPolicy.DESTROY,
     }
 
+    const defaultLambdaEnv = {
+      MICRONAUT_ENVIRONMENTS: "lambda",
+      MICRONAUT_SERVER_CORS_CONFIGURATIONS_WEB_ALLOWEDORIGINS: props.domain,
+      DEPLOYMENT_AWS_REGION: props.region,
+    };
+
     const listInstancesLambda = new LambdaFunction(this, "ListInstances", {
       ...commonLambdaConfig,
       logGroup: new LogGroup(this, "ListInstancesLambdaLogGroup", logGroupProps),
       environment: {
-        MICRONAUT_ENVIRONMENTS: "lambda",
-        MICRONAUT_SERVER_CORS_CONFIGURATIONS_WEB_ALLOWEDORIGINS: props.domain,
+        ...defaultLambdaEnv,
         TABLENAME_DYNAMODBINSTANCE: instancesTable.tableName,
         HOSTED_ZONE_ID: props.hostedZoneId
       },
@@ -67,8 +73,7 @@ export class ApiGatewayBackendConstruct extends Construct {
       ...commonLambdaConfig,
       logGroup: new LogGroup(this, "StarStopInstancesLambdaLogGroup", logGroupProps),
       environment: {
-        MICRONAUT_ENVIRONMENTS: "lambda",
-        MICRONAUT_SERVER_CORS_CONFIGURATIONS_WEB_ALLOWEDORIGINS: props.domain,
+        ...defaultLambdaEnv,
         TABLENAME_DYNAMODBINSTANCE: instancesTable.tableName
       },
       initialPolicy: [

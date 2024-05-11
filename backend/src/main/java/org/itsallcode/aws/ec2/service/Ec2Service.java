@@ -1,7 +1,6 @@
 package org.itsallcode.aws.ec2.service;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,9 +26,7 @@ import jakarta.inject.Singleton;
 public class Ec2Service
 {
     private static final Logger LOG = LoggerFactory.getLogger(Ec2Service.class);
-
     private final AmazonEC2 ec2Client;
-
     private final boolean startStopAllowed;
 
     @Inject
@@ -54,7 +51,7 @@ public class Ec2Service
         final DescribeInstancesResult instances = ec2Client.describeInstances(request);
         return instances.getReservations().stream() //
                 .flatMap(res -> res.getInstances().stream()) //
-                .collect(toList());
+                .toList();
     }
 
     public StartInstancesResult start(final String id)

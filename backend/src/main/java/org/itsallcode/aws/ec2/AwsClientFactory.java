@@ -18,24 +18,42 @@ import com.amazonaws.services.route53.AmazonRoute53Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.env.Environment;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 
 @Factory
 public class AwsClientFactory
 {
-    private static final Regions DEFAULT_REGION = Regions.EU_WEST_1;
+    private final Environment env;
 
+    @Inject
+    public AwsClientFactory(final Environment env)
+    {
+        this.env = env;
+    }
+
+    private String getRegion()
+    {
+        return getEnvValue("deployment.aws.region");
+    }
+
+    private String getEnvValue(final String name)
+    {
+        return env.get(name, String.class).orElseThrow(
+                () -> new IllegalArgumentException("Region not found in environment using property '" + name + "'"));
+    }
     @Singleton
     public AmazonEC2 ec2Client()
     {
-        return AmazonEC2Client.builder().withRegion(DEFAULT_REGION).build();
+        return AmazonEC2Client.builder().withRegion(getRegion()).build();
     }
 
     @Singleton
     public AmazonDynamoDB dynamoDbClient()
     {
-        return AmazonDynamoDBClientBuilder.standard().withRegion(DEFAULT_REGION).build();
+        return AmazonDynamoDBClientBuilder.standard().withRegion(getRegion()).build();
     }
 
     @Singleton
@@ -49,7 +67,7 @@ public class AwsClientFactory
     @Singleton
     public AmazonRoute53 route53Client()
     {
-        return AmazonRoute53Client.builder().withRegion(DEFAULT_REGION).build();
+        return AmazonRoute53Client.builder().withRegion(getRegion()).build();
     }
 
     @Singleton

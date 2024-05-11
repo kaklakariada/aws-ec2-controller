@@ -1,6 +1,5 @@
 package org.itsallcode.aws.ec2.service;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.math.BigDecimal;
@@ -29,9 +28,8 @@ import jakarta.inject.Inject;
 
 public class InstanceService
 {
-    private static final String HOSTED_ZONE_ID_PROPERTY = "hosted.zone.id";
-
     private static final Logger LOG = LoggerFactory.getLogger(InstanceService.class);
+    private static final String HOSTED_ZONE_ID_PROPERTY = "hosted.zone.id";
 
     private final Ec2Service ec2Service;
     private final DynamoDbInstanceService dynamoDbInstanceService;
@@ -69,7 +67,7 @@ public class InstanceService
         final List<SimpleInstance> simpleInstances = ec2Instances.stream()
                 .map(instance -> createInstance(instances, dnsEntries, instance))
                 .sorted(Comparator.comparing(SimpleInstance::getSortOrder)) //
-                .collect(toList());
+                .toList();
 
         LOG.info("Collected {} simple instances", simpleInstances.size());
 

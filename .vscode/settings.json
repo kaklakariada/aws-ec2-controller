@@ -1,4 +1,9 @@
 {
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit",
+        "source.generate.finalModifiers": "explicit",
+        "source.fixAll": "explicit"
+    },
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "modificationsIfAvailable",
     "files.exclude": {

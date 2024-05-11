@@ -6,19 +6,8 @@ import java.time.Duration;
 
 import com.amazonaws.services.ec2.model.Instance;
 
-public class InstancePricing
+public record InstancePricing(Instance instance, Clock clock, BigDecimal usDollarPerHour)
 {
-    private Clock clock;
-    private BigDecimal usDollarPerHour;
-    private Instance instance;
-
-    public InstancePricing(Instance instance, Clock clock, BigDecimal usDollarPerHour)
-    {
-        this.instance = instance;
-        this.clock = clock;
-        this.usDollarPerHour = usDollarPerHour;
-    }
-
     public BigDecimal getUsDollarPerHour()
     {
         return usDollarPerHour;
