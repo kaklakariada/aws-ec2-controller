@@ -31,7 +31,7 @@ export class ApiGatewayBackendConstruct extends Construct {
       handler: "io.micronaut.function.aws.proxy.payload1.ApiGatewayProxyRequestEventFunction",
       architecture: Architecture.X86_64,
       snapStart: SnapStartConf.ON_PUBLISHED_VERSIONS,
-      runtime: Runtime.JAVA_21,
+      runtime: Runtime.JAVA_25,
       timeout: Duration.seconds(30),
       memorySize: 2048,
       code: backendCodeAsset,
