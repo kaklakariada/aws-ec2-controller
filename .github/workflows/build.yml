@@ -46,15 +46,6 @@ jobs:
         cd backend
         ./gradlew build --info --warning-mode=summary
 
-    - name: Sonar analysis
-      if: ${{ env.SONAR_TOKEN != null }}
-      run: |
-        cd backend
-        ./gradlew sonar -Dsonar.token=$SONAR_TOKEN --info --warning-mode=summary
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
     - name: Configure infrastructure
       run: |
         cat > infrastructure/infrastructure-config.ts << EOF
@@ -96,3 +87,12 @@ jobs:
         npm ci
         npm run build
         npm run lint
+
+    - name: Sonar analysis
+      if: ${{ env.SONAR_TOKEN != null }}
+      run: |
+        cd backend
+        ./gradlew sonar -Dsonar.token=$SONAR_TOKEN --info --warning-mode=summary
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
