@@ -66,6 +66,16 @@ export const CONFIG: InfrastructureConfig = {
 };
 ```
 
+### Disable CDK Telemetry
+
+```sh
+npm run cdk -- cli-telemetry --disable
+# Ceck status
+npm run cdk -- cli-telemetry --status
+# Acknowledge note about telemetry
+npm run cdk -- acknowledge 34892
+```
+
 ### Deploy infrastructure and backend
 
 ```sh
