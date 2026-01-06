@@ -1,6 +1,7 @@
 import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
-import { CloudFrontWebDistribution, HttpVersion, OriginAccessIdentity, PriceClass, SecurityPolicyProtocol, SSLMethod, ViewerCertificate, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
+import { Distribution, HttpVersion, OriginAccessIdentity, PriceClass, SecurityPolicyProtocol, SSLMethod, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
+import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { CfnRecordSetGroup } from 'aws-cdk-lib/aws-route53';
 import { BlockPublicAccess, Bucket, BucketPolicy } from 'aws-cdk-lib/aws-s3';
@@ -29,25 +30,22 @@ export class StaticContentConstruct extends Construct {
       comment: `Access bucket ${staticContentBucket}`
     });
 
-    const cloudfrontDistribution = new CloudFrontWebDistribution(this, "CloudFrontDistribution", {
+    const cloudfrontDistribution = new Distribution(this, "CloudFrontDistribution", {
       comment: props.domain,
-      originConfigs: [{
-        behaviors: [{ isDefaultBehavior: true }],
-        s3OriginSource: {
-          s3BucketSource: staticContentBucket,
-          originAccessIdentity: accessIdentity
-        }
-      }],
+      domainNames: [props.domain],
+      defaultBehavior: {
+        origin: S3BucketOrigin.withOriginAccessIdentity(staticContentBucket, {
+          originAccessIdentity: accessIdentity,
+        }),
+        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+      },
       defaultRootObject: "index.html",
-      enableIpV6: true,
-      viewerCertificate: ViewerCertificate.fromAcmCertificate(certificate, {
-        securityPolicy: SecurityPolicyProtocol.TLS_V1_2_2021,
-        sslMethod: SSLMethod.SNI,
-        aliases: [props.domain]
-      }),
+      enableIpv6: true,
+      certificate: certificate,
+      sslSupportMethod: SSLMethod.SNI,
       priceClass: PriceClass.PRICE_CLASS_100,
-      viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       httpVersion: HttpVersion.HTTP2_AND_3,
+      minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
     });
 
     const bucketPolicy = new BucketPolicy(this, "AllowReadAccessToCloudFront", { bucket: staticContentBucket });
