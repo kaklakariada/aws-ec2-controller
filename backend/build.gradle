@@ -1,9 +1,9 @@
 plugins {
     id 'java'
     id 'jacoco'
-    id "com.diffplug.eclipse.apt" version "3.44.0"
-    id "com.github.ben-manes.versions" version "0.51.0"
-    id "org.sonarqube" version "5.0.0.4638"
+    id "com.diffplug.eclipse.apt" version "4.4.1"
+    id "com.github.ben-manes.versions" version "0.53.0"
+    id "org.sonarqube" version "7.2.2.6593"
 }
 
 repositories {
@@ -13,14 +13,14 @@ repositories {
 version = '0.0.1'
 
 ext {
-    micronautVersion = '4.4.2'
-    micronautAwsVersion = '4.5.0'
-    awsSdkVersion = '1.12.718'
+    micronautVersion = '4.10.6'
+    micronautAwsVersion = '4.11.0'
+    awsSdkVersion = '1.12.797'
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
     modularity.inferModulePath = false
 }
@@ -53,16 +53,16 @@ dependencies {
     implementation "com.amazonaws:aws-java-sdk-route53:$awsSdkVersion"
     implementation "com.amazonaws:aws-java-sdk-pricing:$awsSdkVersion"
     
-    implementation 'ch.qos.logback:logback-classic:1.5.6'
+    implementation 'ch.qos.logback:logback-classic:1.5.23'
     implementation 'io.symphonia:lambda-logging:1.0.3:no-config'
     
     testAnnotationProcessor platform("io.micronaut.platform:micronaut-platform:$micronautVersion")
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.2"
-    testImplementation "io.micronaut.test:micronaut-test-junit5:4.3.0"
-    testImplementation "org.mockito:mockito-core:5.11.0"
-    testRuntimeOnly "com.fasterxml.jackson.module:jackson-module-afterburner:2.17.1"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:6.0.1"
+    testImplementation "io.micronaut.test:micronaut-test-junit5:4.10.2"
+    testImplementation "org.mockito:mockito-core:5.21.0"
+    testRuntimeOnly "com.fasterxml.jackson.module:jackson-module-afterburner:2.20.1"
 }
 
 test {

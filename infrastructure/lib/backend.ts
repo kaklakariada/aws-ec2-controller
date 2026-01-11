@@ -2,7 +2,7 @@ import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
 import { AccessLogFormat, AuthorizationType, ConnectionType, CorsOptions, EndpointType, LambdaIntegration, LambdaIntegrationOptions, LogGroupLogDestination, MethodLoggingLevel, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
-import { Architecture, Code, Function as LambdaFunction, LoggingFormat, Runtime, SnapStartConf } from "aws-cdk-lib/aws-lambda";
+import { Architecture, Code, Function as LambdaFunction, LoggingFormat, Runtime } from "aws-cdk-lib/aws-lambda";
 import { LogGroup, LogGroupClass, LogGroupProps, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Construct } from "constructs";
 
@@ -20,7 +20,10 @@ export class ApiGatewayBackendConstruct extends Construct {
 
     const instancesTable = new Table(this, "InstancesTable", {
       billingMode: BillingMode.PAY_PER_REQUEST,
-      pointInTimeRecovery: true,
+      pointInTimeRecoverySpecification: {
+        pointInTimeRecoveryEnabled: true,
+        recoveryPeriodInDays: 35
+      },
       removalPolicy: RemovalPolicy.DESTROY,
       partitionKey: { name: "id", type: AttributeType.STRING }
     });
@@ -30,8 +33,8 @@ export class ApiGatewayBackendConstruct extends Construct {
     const commonLambdaConfig = {
       handler: "io.micronaut.function.aws.proxy.payload1.ApiGatewayProxyRequestEventFunction",
       architecture: Architecture.X86_64,
-      snapStart: SnapStartConf.ON_PUBLISHED_VERSIONS,
-      runtime: Runtime.JAVA_21,
+      //snapStart: SnapStartConf.ON_PUBLISHED_VERSIONS,
+      runtime: Runtime.JAVA_25,
       timeout: Duration.seconds(30),
       memorySize: 2048,
       code: backendCodeAsset,
